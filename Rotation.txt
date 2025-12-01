@@ -1,0 +1,3 @@
+quaternions = rotmat2qvec(transform[:3,:3])[np.newaxis, ...]
+rots_new = quat_multiply(rots, quaternions)
+rots = rots_new / np.linalg.norm(rots_new, axis=-1, keepdims=True)
