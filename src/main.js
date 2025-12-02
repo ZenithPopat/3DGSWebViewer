@@ -16,81 +16,10 @@ let mergedMeshGlobal = null;
 let mergedBytes = null;
 let selectionBox = null;
 
-// // =========================================================
-// // SECTION 1 — PACK / UNPACK FOR 32-BYTE SPLAT FORMAT
-// // =========================================================
+// =========================================================
+// SECTION 1 — PACK / UNPACK FOR 32-BYTE SPLAT FORMAT
+// =========================================================
 
-// // Float32 helper read/write (little endian)
-// function readF32(bytes, byteOffset) {
-//   return new DataView(
-//     bytes.buffer,
-//     bytes.byteOffset,
-//     bytes.byteLength
-//   ).getFloat32(byteOffset, true);
-// }
-// function writeF32(bytes, byteOffset, val) {
-//   new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength).setFloat32(
-//     byteOffset,
-//     val,
-//     true
-//   );
-// }
-
-// // Convert one splat record → JS object
-// function unpackSplatRecord(rawBytes, recordIndex) {
-//   const base = recordIndex * SPLAT_RECORD_BYTES;
-
-//   const px = readF32(rawBytes, base + 0);
-//   // const py = readF32(rawBytes, base + 4);
-//   const py = -readF32(rawBytes, base + 4);
-//   const pz = readF32(rawBytes, base + 8);
-
-//   const sx = readF32(rawBytes, base + 12);
-//   const sy = readF32(rawBytes, base + 16);
-//   const sz = readF32(rawBytes, base + 20);
-
-//   const r = rawBytes[base + 24];
-//   const g = rawBytes[base + 25];
-//   const b = rawBytes[base + 26];
-//   const a = rawBytes[base + 27];
-
-//   const q0 = (rawBytes[base + 28] - 128) / 128.0;
-//   const q1 = (rawBytes[base + 29] - 128) / 128.0;
-//   const q2 = (rawBytes[base + 30] - 128) / 128.0;
-//   const q3 = (rawBytes[base + 31] - 128) / 128.0;
-
-//   return { px, py, pz, sx, sy, sz, r, g, b, a, q0, q1, q2, q3 };
-// }
-
-// // Write one splat object → rawBytes buffer
-// function packSplatRecord(rawBytes, recordIndex, s) {
-//   const base = recordIndex * SPLAT_RECORD_BYTES;
-
-//   writeF32(rawBytes, base + 0, s.px);
-//   // writeF32(rawBytes, base + 4, s.py);
-//   writeF32(rawBytes, base + 4, -s.py);
-//   writeF32(rawBytes, base + 8, s.pz);
-
-//   writeF32(rawBytes, base + 12, s.sx);
-//   writeF32(rawBytes, base + 16, s.sy);
-//   writeF32(rawBytes, base + 20, s.sz);
-
-//   rawBytes[base + 24] = s.r & 0xff;
-//   rawBytes[base + 25] = s.g & 0xff;
-//   rawBytes[base + 26] = s.b & 0xff;
-//   rawBytes[base + 27] = s.a & 0xff;
-
-//   rawBytes[base + 28] =
-//     Math.round(Math.max(-1, Math.min(1, s.q0)) * 128 + 128) & 0xff;
-//   rawBytes[base + 29] =
-//     Math.round(Math.max(-1, Math.min(1, s.q1)) * 128 + 128) & 0xff;
-//   rawBytes[base + 30] =
-//     Math.round(Math.max(-1, Math.min(1, s.q2)) * 128 + 128) & 0xff;
-//   rawBytes[base + 31] =
-//     Math.round(Math.max(-1, Math.min(1, s.q3)) * 128 + 128) & 0xff;
-// }
-
-// safe helpers (use your existing readF32/writeF32 if you prefer)
 function readF32(bytes, byteOffset) {
   return new DataView(
     bytes.buffer,
@@ -111,11 +40,9 @@ function clamp01(x) {
   return Math.max(-1, Math.min(1, x));
 }
 
-// Unpack one splat record -> JS object (with Y flip + quaternion transform)
 function unpackSplatRecord(rawBytes, recordIndex) {
   const base = recordIndex * SPLAT_RECORD_BYTES;
 
-  // safety: ensure we have enough bytes
   if (base + SPLAT_RECORD_BYTES > rawBytes.length) {
     console.error(
       "unpackSplatRecord: out-of-bounds recordIndex",
@@ -125,30 +52,24 @@ function unpackSplatRecord(rawBytes, recordIndex) {
     return null;
   }
 
-  // positions: flip Y to match Babylon's mesh space
   const px = readF32(rawBytes, base + 0);
-  const py = -readF32(rawBytes, base + 4); // IMPORTANT: flip Y
+  const py = -readF32(rawBytes, base + 4);
   const pz = readF32(rawBytes, base + 8);
 
-  // size
   const sx = readF32(rawBytes, base + 12);
   const sy = readF32(rawBytes, base + 16);
   const sz = readF32(rawBytes, base + 20);
 
-  // color bytes
   const r = rawBytes[base + 24];
   const g = rawBytes[base + 25];
   const b = rawBytes[base + 26];
   const a = rawBytes[base + 27];
 
-  // quaternion components stored as 0..255 with 128 center
   let q0 = (rawBytes[base + 28] - 128) / 128.0;
   let q1 = (rawBytes[base + 29] - 128) / 128.0;
   let q2 = (rawBytes[base + 30] - 128) / 128.0;
   let q3 = (rawBytes[base + 31] - 128) / 128.0;
 
-  // Apply Y-flip reflection to quaternion so orientation matches flipped positions.
-  // Reflection across Y: (w, x, y, z) -> (w, -x, y, -z)
   if (isFinite(q0) && isFinite(q1) && isFinite(q2) && isFinite(q3)) {
     q1 = -q1;
     q3 = -q3;
@@ -170,11 +91,9 @@ function unpackSplatRecord(rawBytes, recordIndex) {
   return { px, py, pz, sx, sy, sz, r, g, b, a, q0, q1, q2, q3 };
 }
 
-// Pack one splat object -> rawBytes buffer (inverse transform)
 function packSplatRecord(rawBytes, recordIndex, s) {
   const base = recordIndex * SPLAT_RECORD_BYTES;
 
-  // safety: ensure we have enough bytes
   if (base + SPLAT_RECORD_BYTES > rawBytes.length) {
     console.error(
       "packSplatRecord: out-of-bounds recordIndex",
@@ -184,7 +103,6 @@ function packSplatRecord(rawBytes, recordIndex, s) {
     return;
   }
 
-  // positions: undo the Y flip (store as raw file space)
   const px = Number(s.px) || 0;
   const py = -Number(s.py) || 0; // undo flip here
   const pz = Number(s.pz) || 0;
@@ -202,8 +120,6 @@ function packSplatRecord(rawBytes, recordIndex, s) {
   rawBytes[base + 26] = s.b & 0xff || 0;
   rawBytes[base + 27] = s.a & 0xff || 0;
 
-  // quaternion: invert the earlier reflection BEFORE storing:
-  // apply inverse: (w, x, y, z) -> (w, -x, y, -z)
   let q0 = Number(s.q0);
   let q1 = Number(s.q1);
   let q2 = Number(s.q2);
@@ -217,11 +133,10 @@ function packSplatRecord(rawBytes, recordIndex, s) {
   }
 
   const q0f = clamp01(q0);
-  const q1f = clamp01(-q1); // undo X flip
+  const q1f = clamp01(-q1);
   const q2f = clamp01(q2);
-  const q3f = clamp01(-q3); // undo Z flip
+  const q3f = clamp01(-q3);
 
-  // convert -1..1 -> 0..255 centered at 128
   rawBytes[base + 28] = Math.round(q0f * 128 + 128) & 0xff;
   rawBytes[base + 29] = Math.round(q1f * 128 + 128) & 0xff;
   rawBytes[base + 30] = Math.round(q2f * 128 + 128) & 0xff;
@@ -232,7 +147,6 @@ function packSplatRecord(rawBytes, recordIndex, s) {
 // SECTION 2 — BUILD MERGED BYTE BUFFER FROM ALL OBJECTS
 // =========================================================
 function buildMergedBytes(metadataList) {
-  // compute total bytes required
   let totalSplats = 0;
   for (const m of metadataList) {
     if (m && m.parsed) totalSplats += m.parsed.length;
@@ -685,73 +599,6 @@ function selectObject(meta) {
   if (currentScene.activeCamera) currentScene.activeCamera.setTarget(center);
 }
 
-// // =========================================================
-// // File upload handler (UI) — parses .splat bytes and merges
-// // =========================================================
-// async function handleFileUpload(files, scene) {
-//   if (!files || files.length === 0) return;
-
-//   for (const file of files) {
-//     const url = URL.createObjectURL(file);
-//     const newMesh = new BABYLON.GaussianSplattingMesh(
-//       file.name,
-//       url,
-//       scene,
-//       true
-//     );
-
-//     await new Promise((resolve) => {
-//       if (newMesh.onReadyObservable && newMesh.onReadyObservable.addOnce) {
-//         newMesh.onReadyObservable.addOnce(() => resolve());
-//       } else {
-//         const check = () => {
-//           if (newMesh.splatsData && newMesh.splatsData.byteLength > 0)
-//             resolve();
-//           else requestAnimationFrame(check);
-//         };
-//         check();
-//       }
-//     });
-
-//     const meta = generateMetadata(newMesh, file.name, 0);
-
-//     if (newMesh.splatsData) {
-//       meta.rawBytes = new Uint8Array(newMesh.splatsData);
-//       meta.splatCount = Math.floor(meta.rawBytes.length / SPLAT_RECORD_BYTES);
-//       meta.parsed = new Array(meta.splatCount);
-//       for (let i = 0; i < meta.splatCount; i++)
-//         meta.parsed[i] = unpackSplatRecord(meta.rawBytes, i);
-//     } else {
-//       console.warn("handleFileUpload: no splatsData on newMesh", file.name);
-//       newMesh.dispose();
-//       continue;
-//     }
-
-//     // add to list
-//     objectMetadataList.push(meta);
-
-//     // build mergedBytes and update mesh
-//     mergedBytes = buildMergedBytes(objectMetadataList);
-
-//     if (mergedMeshGlobal) mergedMeshGlobal.dispose();
-//     mergedMeshGlobal = new BABYLON.GaussianSplattingMesh(
-//       "merged",
-//       undefined,
-//       scene
-//     );
-//     mergedMeshGlobal.updateData(mergedBytes.buffer);
-
-//     mergedMeshGlobal.computeWorldMatrix(true);
-//     mergedMeshGlobal.refreshBoundingInfo();
-
-//     // update UI + selection indices are already updated by buildMergedBytes
-//     createSceneGraphUI(scene, mergedMeshGlobal);
-
-//     // dispose temporary mesh
-//     newMesh.dispose();
-//   }
-// }
-
 // =========================================================
 // File upload handler (UI) — parses .splat bytes and merges
 // =========================================================
@@ -812,10 +659,7 @@ async function handleFileUpload(files, scene) {
       continue;
     }
 
-    // --- VERY IMPORTANT: compute bounding box from parsed splat positions ---
     recomputeBoundingBoxForParsed(meta);
-
-    console.log("PARSED BBOX:", meta.boundingBox.min, meta.boundingBox.max);
 
     // Compare with temporary mesh bbox
     newMesh.computeWorldMatrix(true);
