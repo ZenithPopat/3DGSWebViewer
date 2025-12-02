@@ -41,6 +41,7 @@ export async function handleFileUpload(files) {
       startIndex: 0,
       endIndex: 0,
       boundingBox: null,
+      visible: true,
     };
 
     // Parse every splat into JS objects

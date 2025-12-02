@@ -2,6 +2,7 @@ import { state } from "../state/state.js";
 import { handleFileUpload } from "../upload/uploadHandler.js";
 import { selectObject } from "../splat/splatSelection.js";
 import { focusCameraOn } from "../utils/focusCamera.js";
+import { toggleVisibility } from "../splat/toggleVisibility.js";
 
 export function createSceneGraphUI() {
   // Remove old UI
@@ -105,9 +106,25 @@ export function createSceneGraphUI() {
       );
     };
 
+    const visBtn = document.createElement("button");
+    visBtn.style.background = "transparent";
+    visBtn.style.border = "none";
+    visBtn.style.cursor = "pointer";
+    visBtn.style.fontSize = "16px";
+
+    // Eye icon depending on state
+    visBtn.textContent = meta.visible ? "👁️" : "🙈";
+    visBtn.title = meta.visible ? "Hide object" : "Show object";
+
+    visBtn.onclick = (ev) => {
+      ev.stopPropagation();
+      toggleVisibility(meta);
+    };
+
     // Append toolbar items
     tools.appendChild(focusBtn);
     tools.appendChild(delBtn);
+    tools.appendChild(visBtn);
 
     entry.appendChild(label);
     entry.appendChild(tools);
