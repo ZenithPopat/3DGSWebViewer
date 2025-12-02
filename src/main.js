@@ -1,4 +1,3 @@
-// Clean final viewer — starts empty, loads via UI only
 import * as BABYLON from "@babylonjs/core";
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
@@ -16,9 +15,7 @@ let mergedMeshGlobal = null;
 let mergedBytes = null;
 let selectionBox = null;
 
-// =========================================================
-// SECTION 1 — PACK / UNPACK FOR 32-BYTE SPLAT FORMAT
-// =========================================================
+// PACK / UNPACK FOR 32-BYTE SPLAT FORMAT
 
 function readF32(bytes, byteOffset) {
   return new DataView(
@@ -104,7 +101,7 @@ function packSplatRecord(rawBytes, recordIndex, s) {
   }
 
   const px = Number(s.px) || 0;
-  const py = -Number(s.py) || 0; // undo flip here
+  const py = -Number(s.py) || 0;
   const pz = Number(s.pz) || 0;
 
   writeF32(rawBytes, base + 0, px);
@@ -143,9 +140,7 @@ function packSplatRecord(rawBytes, recordIndex, s) {
   rawBytes[base + 31] = Math.round(q3f * 128 + 128) & 0xff;
 }
 
-// =========================================================
-// SECTION 2 — BUILD MERGED BYTE BUFFER FROM ALL OBJECTS
-// =========================================================
+// BUILD MERGED BYTE BUFFER FROM ALL OBJECTS
 function buildMergedBytes(metadataList) {
   let totalSplats = 0;
   for (const m of metadataList) {
@@ -173,10 +168,7 @@ function buildMergedBytes(metadataList) {
   return merged;
 }
 
-// =========================================================
-// SECTION 3 — Commit one object's parsed splats back into mergedBytes
-// (partial update of mergedBytes)
-// =========================================================
+// Commit one object's parsed splats back into mergedBytes
 function commitMetaToMergedBytes(meta) {
   if (!mergedBytes || !meta || !meta.parsed) return;
 
@@ -185,11 +177,8 @@ function commitMetaToMergedBytes(meta) {
   }
 }
 
-// =========================================================
-// SECTION 4 — Quaternion Math Helpers (for rotations)
-// =========================================================
+// Quaternion Math Helpers for rotations
 function quatMultiply(q1, q2) {
-  // q = [w, x, y, z]
   const [w1, x1, y1, z1] = q1;
   const [w2, x2, y2, z2] = q2;
   return [
@@ -213,7 +202,6 @@ function axisAngleToQuat(axis, angleDeg) {
     case "x":
       return [c, s, 0, 0];
     case "y":
-      // return [c, 0, s, 0];
       return [c, 0, -s, 0];
     case "z":
       return [c, 0, 0, s];
@@ -222,11 +210,8 @@ function axisAngleToQuat(axis, angleDeg) {
   }
 }
 
-// =========================================================
-// UI: scene graph
-// =========================================================
+// scene graph UI
 function createSceneGraphUI(scene, mergedMesh) {
-  // remove old
   const old = document.getElementById("sceneGraph");
   if (old) old.remove();
 
@@ -283,7 +268,6 @@ function createSceneGraphUI(scene, mergedMesh) {
 
   uploadBtn.onclick = () => fileInput.click();
 
-  // list objects
   objectMetadataList.forEach((meta) => {
     const entry = document.createElement("div");
     entry.className = "scene-object";
@@ -298,7 +282,6 @@ function createSceneGraphUI(scene, mergedMesh) {
     label.style.transition = "color 0.12s";
 
     label.addEventListener("click", () => {
-      // reset colors
       document
         .querySelectorAll(".scene-object span")
         .forEach((l) => (l.style.color = "#ddd"));
@@ -326,35 +309,7 @@ function createSceneGraphUI(scene, mergedMesh) {
   });
 }
 
-// =========================================================
-// Metadata generator (lightweight; splat counts set later)
-// =========================================================
-function generateMetadata(gsMesh, fileName, startIndex) {
-  gsMesh.computeWorldMatrix(true);
-  gsMesh.refreshBoundingInfo();
-
-  const boundingInfo = gsMesh.getBoundingInfo();
-  const boundingBox = {
-    min: boundingInfo.minimum.clone(),
-    max: boundingInfo.maximum.clone(),
-  };
-
-  return {
-    id: gsMesh.name || BABYLON.Tools.RandomId(),
-    fileName,
-    startIndex,
-    endIndex: startIndex,
-    splatCount: 0,
-    boundingBox,
-    color: new BABYLON.Color3(Math.random(), Math.random(), Math.random()),
-    visible: true,
-    gs: gsMesh,
-  };
-}
-
-// =========================================================
-// Deletion (rebuild mergedBytes from remaining objects)
-// =========================================================
+// Deletion of an object
 function deleteObject(meta, scene) {
   if (!meta) return;
 
@@ -380,13 +335,10 @@ function deleteObject(meta, scene) {
     }
   }
 
-  // refresh UI
   createSceneGraphUI(scene, mergedMeshGlobal);
 }
 
-// =========================================================
-// TRANSFORMS: translate / scale / rotate (per-splat, safe)
-// =========================================================
+// TRANSFORMS
 function translateObject(meta, dx, dy, dz) {
   if (!meta || !meta.parsed || !mergedBytes || !mergedMeshGlobal) return;
 
@@ -422,7 +374,6 @@ function translateObject(meta, dx, dy, dz) {
 function scaleObjectPerSplat(meta, scaleFactor) {
   if (!meta || !meta.parsed || !mergedBytes || !mergedMeshGlobal) return;
 
-  // centroid
   let cx = 0,
     cy = 0,
     cz = 0;
@@ -471,7 +422,6 @@ function scaleObjectPerSplat(meta, scaleFactor) {
 function rotateObjectPerSplat(meta, axis, angleDeg) {
   if (!meta || !meta.parsed || !mergedBytes || !mergedMeshGlobal) return;
 
-  // centroid
   let cx = 0,
     cy = 0,
     cz = 0;
@@ -490,7 +440,6 @@ function rotateObjectPerSplat(meta, axis, angleDeg) {
   for (let i = 0; i < meta.splatCount; i++) {
     const s = meta.parsed[i];
 
-    // rotate position using quaternion
     const x = s.px - cx,
       y = s.py - cy,
       z = s.pz - cz;
@@ -502,7 +451,6 @@ function rotateObjectPerSplat(meta, axis, angleDeg) {
     s.py = cy + rotated[2];
     s.pz = cz + rotated[3];
 
-    // rotate orientation quaternion
     let qCur = [s.q0, s.q1, s.q2, s.q3];
     let qNew = quatMultiply(qRot, qCur);
     qNew = quatNormalize(qNew);
@@ -534,7 +482,7 @@ function rotateObjectPerSplat(meta, axis, angleDeg) {
   }
 }
 
-// recompute bounding box from parsed splats
+// recomputing bounding box
 function recomputeBoundingBoxForParsed(meta) {
   const min = new BABYLON.Vector3(
     Number.POSITIVE_INFINITY,
@@ -560,9 +508,7 @@ function recomputeBoundingBoxForParsed(meta) {
   meta.boundingBox = { min, max };
 }
 
-// =========================================================
-// Selection visuals
-// =========================================================
+// Selection of object
 function selectObject(meta) {
   selectedObject = meta;
 
@@ -599,9 +545,7 @@ function selectObject(meta) {
   if (currentScene.activeCamera) currentScene.activeCamera.setTarget(center);
 }
 
-// =========================================================
-// File upload handler (UI) — parses .splat bytes and merges
-// =========================================================
+// File upload handler
 async function handleFileUpload(files, scene) {
   if (!files || files.length === 0) return;
 
@@ -616,7 +560,6 @@ async function handleFileUpload(files, scene) {
       true
     );
 
-    // Wait until mesh is ready
     await new Promise((resolve) => {
       if (newMesh.onReadyObservable?.addOnce) {
         newMesh.onReadyObservable.addOnce(() => resolve());
@@ -630,7 +573,6 @@ async function handleFileUpload(files, scene) {
       }
     });
 
-    // --- Create metadata container ---
     const meta = {
       id: newMesh.name || BABYLON.Tools.RandomId(),
       fileName: file.name,
@@ -641,10 +583,9 @@ async function handleFileUpload(files, scene) {
       endIndex: 0,
       boundingBox: null,
       visible: true,
-      gs: null, // (newMesh will be disposed after parsing)
+      gs: null,
     };
 
-    // --- Extract raw bytes and parse splats ---
     if (newMesh.splatsData) {
       meta.rawBytes = new Uint8Array(newMesh.splatsData);
       meta.splatCount = Math.floor(meta.rawBytes.length / SPLAT_RECORD_BYTES);
@@ -661,7 +602,6 @@ async function handleFileUpload(files, scene) {
 
     recomputeBoundingBoxForParsed(meta);
 
-    // Compare with temporary mesh bbox
     newMesh.computeWorldMatrix(true);
     newMesh.refreshBoundingInfo();
     console.log(
@@ -670,13 +610,10 @@ async function handleFileUpload(files, scene) {
       newMesh.getBoundingInfo().maximum
     );
 
-    // --- Now add to the metadata list ---
     objectMetadataList.push(meta);
 
-    // --- Build merged bytes from ALL parsed objects ---
     mergedBytes = buildMergedBytes(objectMetadataList);
 
-    // --- Rebuild the merged global mesh ---
     if (mergedMeshGlobal) mergedMeshGlobal.dispose();
 
     mergedMeshGlobal = new BABYLON.GaussianSplattingMesh(
@@ -687,21 +624,16 @@ async function handleFileUpload(files, scene) {
 
     mergedMeshGlobal.updateData(mergedBytes.buffer);
 
-    // Ensure transforms/BBox of merged mesh are correct
     mergedMeshGlobal.computeWorldMatrix(true);
     mergedMeshGlobal.refreshBoundingInfo();
 
-    // --- Rebuild UI ---
     createSceneGraphUI(scene, mergedMeshGlobal);
 
-    // Dispose temporary file-based GS mesh
     newMesh.dispose();
   }
 }
 
-// =========================================================
-// Startup: create the scene, no automatic filePaths loading (Option B)
-// =========================================================
+// Creating the scene
 const createScene = async function () {
   const scene = new BABYLON.Scene(engine);
   currentScene = scene;
@@ -723,7 +655,6 @@ const createScene = async function () {
     scene
   );
 
-  // Start UI (empty)
   createSceneGraphUI(scene, null);
 
   scene.debugLayer.show();
@@ -738,9 +669,7 @@ const createScene = async function () {
   });
 })();
 
-// =========================================================
-// Keyboard controls (operate on selectedObject)
-// =========================================================
+// Keyboard controls
 window.addEventListener("keydown", (event) => {
   if (!selectedObject) return;
   const step = 0.1;
