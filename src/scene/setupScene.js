@@ -28,7 +28,7 @@ export async function createScene() {
 
   createSceneGraphUI();
 
-  scene.debugLayer.show();
+  // scene.debugLayer.show();
 
   return { scene, engine };
 }
