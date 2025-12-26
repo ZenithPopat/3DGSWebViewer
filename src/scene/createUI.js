@@ -3,6 +3,9 @@ import { handleFileUpload } from "../upload/uploadHandler.js";
 import { selectObject } from "../splat/splatSelection.js";
 import { focusCameraOn } from "../utils/focusCamera.js";
 import { toggleVisibility } from "../splat/toggleVisibility.js";
+import { exportMerged } from "../export/exportMerged.js";
+import { exportIndividually } from "../export/exportEach.js";
+import { removeObject } from "../splat/removeObject.js";
 
 export function createSceneGraphUI() {
   let isDragging = false;
@@ -78,6 +81,58 @@ export function createSceneGraphUI() {
   addBtn.onmouseenter = () => (addBtn.style.background = "#444");
   addBtn.onmouseleave = () => (addBtn.style.background = "#333");
   container.appendChild(addBtn);
+
+  const exportAllSplatBtn = document.createElement("button");
+  exportAllSplatBtn.textContent = "⬇ Export All merged (splat)";
+  exportAllSplatBtn.style.width = "100%";
+  exportAllSplatBtn.style.padding = "8px";
+  exportAllSplatBtn.style.marginBottom = "6px";
+  exportAllSplatBtn.style.border = "none";
+  exportAllSplatBtn.style.borderRadius = "6px";
+  exportAllSplatBtn.style.background = "#2d8dff";
+  exportAllSplatBtn.style.color = "white";
+  exportAllSplatBtn.style.cursor = "pointer";
+  exportAllSplatBtn.onclick = () => exportMerged("splat");
+  container.appendChild(exportAllSplatBtn);
+
+  // const exportAllPlyBtn = document.createElement("button");
+  // exportAllPlyBtn.textContent = "⬇ Export All merged (ply)";
+  // exportAllPlyBtn.style.width = "100%";
+  // exportAllPlyBtn.style.padding = "8px";
+  // exportAllPlyBtn.style.marginBottom = "6px";
+  // exportAllPlyBtn.style.border = "none";
+  // exportAllPlyBtn.style.borderRadius = "6px";
+  // exportAllPlyBtn.style.background = "#2d8dff";
+  // exportAllPlyBtn.style.color = "white";
+  // exportAllPlyBtn.style.cursor = "pointer";
+  // exportAllPlyBtn.onclick = () => exportMerged("ply");
+  // container.appendChild(exportAllPlyBtn);
+
+  const exportEachSplatBtn = document.createElement("button");
+  exportEachSplatBtn.textContent = "⬇ Export Each File (splat)";
+  exportEachSplatBtn.style.width = "100%";
+  exportEachSplatBtn.style.padding = "8px";
+  exportEachSplatBtn.style.marginBottom = "12px";
+  exportEachSplatBtn.style.border = "none";
+  exportEachSplatBtn.style.borderRadius = "6px";
+  exportEachSplatBtn.style.background = "#555";
+  exportEachSplatBtn.style.color = "white";
+  exportEachSplatBtn.style.cursor = "pointer";
+  exportEachSplatBtn.onclick = () => exportIndividually("splat");
+  container.appendChild(exportEachSplatBtn);
+
+  // const exportEachPlyBtn = document.createElement("button");
+  // exportEachPlyBtn.textContent = "⬇ Export Each File (ply)";
+  // exportEachPlyBtn.style.width = "100%";
+  // exportEachPlyBtn.style.padding = "8px";
+  // exportEachPlyBtn.style.marginBottom = "12px";
+  // exportEachPlyBtn.style.border = "none";
+  // exportEachPlyBtn.style.borderRadius = "6px";
+  // exportEachPlyBtn.style.background = "#555";
+  // exportEachPlyBtn.style.color = "white";
+  // exportEachPlyBtn.style.cursor = "pointer";
+  // exportEachPlyBtn.onclick = () => exportIndividually("ply");
+  // container.appendChild(exportEachPlyBtn);
 
   // Hidden file input
   const fileInput = document.createElement("input");
