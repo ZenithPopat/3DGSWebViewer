@@ -1,5 +1,5 @@
 import { state } from "../state/state.js";
-import { commitMetaToMergedBytes } from "./splatMerge.js";
+// import { commitMetaToMergedBytes } from "./splatMerge.js";
 import { recomputeBoundingBoxForParsed } from "./splatBounds.js";
 import {
   quatMultiply,
@@ -7,6 +7,7 @@ import {
   axisAngleToQuat,
 } from "../core/quatMath.js";
 import { refreshSelectionBox } from "./updateSelectionBox.js";
+import { rebuildMergedMeshWithSelection } from "../selection/rebuildWithSelection.js";
 
 function safeUpdateMesh() {
   try {
@@ -29,8 +30,7 @@ export function translateObject(meta, dx, dy, dz) {
     s.pz += dz;
   }
 
-  commitMetaToMergedBytes(meta, state.mergedBytes);
-  safeUpdateMesh();
+  rebuildMergedMeshWithSelection();
 
   recomputeBoundingBoxForParsed(meta);
   refreshSelectionBox(meta);
@@ -61,8 +61,7 @@ export function scaleObjectPerSplat(meta, factor) {
     s.sz *= factor;
   }
 
-  commitMetaToMergedBytes(meta, state.mergedBytes);
-  safeUpdateMesh();
+  rebuildMergedMeshWithSelection();
 
   recomputeBoundingBoxForParsed(meta);
   refreshSelectionBox(meta);
@@ -99,8 +98,7 @@ export function rotateObjectPerSplat(meta, axis, angleDeg) {
     [s.q0, s.q1, s.q2, s.q3] = newQ;
   }
 
-  commitMetaToMergedBytes(meta, state.mergedBytes);
-  safeUpdateMesh();
+  rebuildMergedMeshWithSelection();
 
   recomputeBoundingBoxForParsed(meta);
   refreshSelectionBox(meta);

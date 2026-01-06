@@ -1,0 +1,180 @@
+import { SPLAT_RECORD_BYTES } from "../core/constants.js";
+import { packSplatRecord } from "./splatFormat.js";
+import { state } from "../state/state.js";
+
+export function buildMergedBytes(metadataList) {
+  // 1️⃣ Count splats excluding erased ones
+  let totalSplats = 0;
+  let globalIndex = 0;
+
+  for (const meta of metadataList) {
+    if (!meta.parsed) continue;
+
+    for (let i = 0; i < meta.parsed.length; i++) {
+      if (!state.erase?.erasedSplatIndices?.has(globalIndex)) {
+        totalSplats++;
+      }
+      globalIndex++;
+    }
+  }
+
+  // 2️⃣ Allocate buffer
+  const merged = new Uint8Array(totalSplats * SPLAT_RECORD_BYTES);
+
+  let writeIndex = 0;
+  globalIndex = 0;
+
+  // 3️⃣ Pack splats, skipping erased + applying highlight
+  for (const meta of metadataList) {
+    if (!meta.parsed) continue;
+
+    meta.startIndex = writeIndex;
+    let keptCount = 0;
+
+    for (let i = 0; i < meta.parsed.length; i++) {
+      if (state.erase?.erasedSplatIndices?.has(globalIndex)) {
+        globalIndex++;
+        continue;
+      }
+
+      const s = meta.parsed[i];
+      const tmp = { ...s };
+
+      const isSelectedSplat = state.selection.splatIndices.has(globalIndex);
+      const isSelectedObject =
+        state.selectedObject && meta.id === state.selectedObject.id;
+
+      // 🟡 selected splat (strong)
+      if (isSelectedSplat) {
+        tmp.r = 255;
+        tmp.g = 255;
+        tmp.b = 0;
+      }
+      // 🔵 selected object (subtle)
+      else if (isSelectedObject) {
+        tmp.r = Math.min(255, tmp.r + 30);
+        tmp.g = Math.min(255, tmp.g + 60);
+        tmp.b = Math.min(255, tmp.b + 80);
+      }
+
+      packSplatRecord(merged, writeIndex, tmp);
+
+      writeIndex++;
+      keptCount++;
+      globalIndex++;
+    }
+
+    meta.splatCount = keptCount;
+    meta.endIndex = meta.startIndex + keptCount;
+  }
+
+  return merged;
+}
+
+// import { SPLAT_RECORD_BYTES } from "../core/constants.js";
+// import { packSplatRecord } from "./splatFormat.js";
+// import { state } from "../state/state.js";
+
+// export function buildMergedBytes(metadataList) {
+//   // 1️⃣ Count splats excluding erased ones
+//   let totalSplats = 0;
+//   let globalIndex = 0;
+
+//   for (const meta of metadataList) {
+//     if (!meta.parsed) continue;
+
+//     for (let i = 0; i < meta.parsed.length; i++) {
+//       if (!state.erase?.erasedSplatIndices?.has(globalIndex)) {
+//         totalSplats++;
+//       }
+//       globalIndex++;
+//     }
+//   }
+
+//   // 2️⃣ Allocate buffer
+//   const merged = new Uint8Array(totalSplats * SPLAT_RECORD_BYTES);
+
+//   let writeIndex = 0;
+//   globalIndex = 0;
+
+//   // 3️⃣ Pack splats, skipping erased
+//   for (const meta of metadataList) {
+//     if (!meta.parsed) continue;
+
+//     meta.startIndex = writeIndex;
+//     let keptCount = 0;
+
+//     for (let i = 0; i < meta.parsed.length; i++) {
+//       if (state.erase?.erasedSplatIndices?.has(globalIndex)) {
+//         globalIndex++;
+//         continue;
+//       }
+
+//       const isSelectedSplat = state.selection.splatIndices.has(globalIndex);
+//       const isSelectedObject =
+//         state.selectedObject && meta.id === state.selectedObject.id;
+
+//       // clone splat so we don’t mutate original colors
+//       const s = meta.parsed[i];
+//       const tmp = { ...s };
+
+//       // 🟡 selected splat (strong)
+//       if (isSelectedSplat) {
+//         tmp.r = 255;
+//         tmp.g = 255;
+//         tmp.b = 0;
+//       }
+//       // 🔵 selected object (subtle)
+//       else if (isSelectedObject) {
+//         tmp.r = Math.min(255, tmp.r + 30);
+//         tmp.g = Math.min(255, tmp.g + 60);
+//         tmp.b = Math.min(255, tmp.b + 80);
+//       }
+
+//       packSplatRecord(merged, writeIndex, meta.parsed[i]);
+//       writeIndex++;
+//       keptCount++;
+//       globalIndex++;
+//     }
+
+//     meta.splatCount = keptCount;
+//     meta.endIndex = meta.startIndex + keptCount;
+//   }
+
+//   return merged;
+// }
+
+// import { SPLAT_RECORD_BYTES } from "../core/constants.js";
+// import { packSplatRecord } from "./splatFormat.js";
+
+// export function buildMergedBytes(metadataList) {
+//   let totalSplats = metadataList.reduce(
+//     (sum, m) => sum + (m.parsed?.length || 0),
+//     0
+//   );
+
+//   const merged = new Uint8Array(totalSplats * SPLAT_RECORD_BYTES);
+
+//   let writeIndex = 0;
+
+//   for (const meta of metadataList) {
+//     if (!meta.parsed) continue;
+
+//     meta.startIndex = writeIndex;
+//     meta.splatCount = meta.parsed.length;
+
+//     for (let i = 0; i < meta.splatCount; i++)
+//       packSplatRecord(merged, writeIndex + i, meta.parsed[i]);
+
+//     writeIndex += meta.splatCount;
+//     meta.endIndex = meta.startIndex + meta.splatCount;
+//   }
+
+//   return merged;
+// }
+
+// export function commitMetaToMergedBytes(meta, mergedBytes) {
+//   for (let i = 0; i < meta.splatCount; i++) {
+//     packSplatRecord(mergedBytes, meta.startIndex + i, meta.parsed[i]);
+//   }
+// }

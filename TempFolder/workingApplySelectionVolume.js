@@ -53,6 +53,28 @@ export function applySelectionVolume() {
         state.selection.splatIndices.add(globalIndex);
       }
 
+      // transform into selection volume local space
+      // const localPos = BABYLON.Vector3.TransformCoordinates(worldPos, invWorld);
+
+      // let inside = false;
+
+      // 🔵 Sphere selection
+      // const UNIT_RADIUS_SQ = 0.25; // (0.5)^2
+      // const UNIT_EXTENT = 0.5;
+
+      // if (tool.shape === "sphere") {
+      //   inside = localPos.lengthSquared() <= UNIT_RADIUS_SQ;
+      // } else if (tool.shape === "box") {
+      //   inside =
+      //     Math.abs(localPos.x) <= UNIT_EXTENT &&
+      //     Math.abs(localPos.y) <= UNIT_EXTENT &&
+      //     Math.abs(localPos.z) <= UNIT_EXTENT;
+      // }
+
+      // if (inside) {
+      //   state.selection.splatIndices.add(globalIndex);
+      // }
+
       globalIndex++;
     }
   }

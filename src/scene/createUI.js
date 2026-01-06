@@ -9,11 +9,15 @@ import {
   enableSelectionVolume,
   disableSelectionVolume,
   setSelectionVolumeRadius,
+  setSelectionBoxSize,
   isSelectionVolumeEnabled,
+  setSelectionShape,
 } from "../selection/selectionVolumeController.js";
 import { applySelectionVolume } from "../selection/applySelectionVolume.js";
 import { clearSelection } from "../selection/clearSelection.js";
 import { selectObject, deselectObject } from "../splat/splatSelection.js";
+import { eraseSelectedSplats } from "../selection/eraseSelectedSplats.js";
+
 import {
   createSoftDivider,
   createButton,
@@ -145,6 +149,26 @@ export function createSceneGraphUI() {
   });
   selectionSection.content.appendChild(selectionBtn);
 
+  const shapeSelect = document.createElement("select");
+  shapeSelect.style.width = "100%";
+  shapeSelect.style.marginBottom = "6px";
+
+  ["sphere", "box"].forEach((s) => {
+    const opt = document.createElement("option");
+    opt.value = s;
+    opt.textContent = s === "sphere" ? "Sphere Selection" : "Box Selection";
+    shapeSelect.appendChild(opt);
+  });
+
+  shapeSelect.value = state.selectionTool.shape;
+
+  shapeSelect.onchange = (e) => {
+    setSelectionShape(e.target.value);
+    syncSelectionSizeSlider();
+  };
+
+  selectionSection.content.appendChild(shapeSelect);
+
   // Radius label
   const radiusLabel = document.createElement("div");
   radiusLabel.textContent = "Sphere Radius";
@@ -161,9 +185,26 @@ export function createSceneGraphUI() {
   radiusSlider.step = "0.05";
   radiusSlider.value = state.selectionTool.radius;
   radiusSlider.style.width = "100%";
-  radiusSlider.oninput = (e) =>
-    setSelectionVolumeRadius(Number(e.target.value));
+  function syncSelectionSizeSlider() {
+    if (state.selectionTool.shape === "sphere") {
+      radiusLabel.textContent = "Sphere Radius";
+      radiusSlider.value = state.selectionTool.radius;
+    } else if (state.selectionTool.shape === "box") {
+      radiusLabel.textContent = "Box Size";
+      radiusSlider.value = state.selectionTool.boxSize.x;
+    }
+  }
+  radiusSlider.oninput = (e) => {
+    const value = Number(e.target.value);
+
+    if (state.selectionTool.shape === "sphere") {
+      setSelectionVolumeRadius(value);
+    } else if (state.selectionTool.shape === "box") {
+      setSelectionBoxSize(value, value, value);
+    }
+  };
   selectionSection.content.appendChild(radiusSlider);
+  syncSelectionSizeSlider();
 
   // Restrict checkbox
   const restrictWrapper = document.createElement("label");
@@ -195,6 +236,11 @@ export function createSceneGraphUI() {
       createButton({
         label: "❌ Clear",
         onClick: clearSelection,
+      }),
+      createButton({
+        label: "🗑️ Erase",
+        variant: "danger",
+        onClick: eraseSelectedSplats,
       }),
     ])
   );
