@@ -30,10 +30,12 @@ export function createSceneGraphUI() {
   const old = document.getElementById("sceneGraph");
   if (old) old.remove();
 
-  const { container, header, resizeHandle } = createFloatingPanel(
-    "sceneGraph",
-    "Editor Panel"
-  );
+  // const { container, header, resizeHandle } = createFloatingPanel(
+  //   "sceneGraph",
+  //   "Editor Panel"
+  // );
+
+  const projectPanel = createFloatingPanel("project", "📁 Project");
 
   // --- Import / Export ---
   const importExport = createCollapsibleSection(
@@ -41,7 +43,7 @@ export function createSceneGraphUI() {
     "📁",
     true
   );
-  container.appendChild(importExport.section);
+  projectPanel.container.appendChild(importExport.section);
 
   // Hidden file input
   const fileInput = document.createElement("input");
@@ -49,7 +51,7 @@ export function createSceneGraphUI() {
   fileInput.accept = ".splat";
   fileInput.multiple = true;
   fileInput.style.display = "none";
-  container.appendChild(fileInput);
+  projectPanel.container.appendChild(fileInput);
 
   fileInput.onchange = (e) => handleFileUpload(Array.from(e.target.files));
 
@@ -76,17 +78,49 @@ export function createSceneGraphUI() {
     ])
   );
 
-  container.appendChild(createSoftDivider());
+  projectPanel.container.appendChild(importExport.section);
+
+  projectPanel.container.appendChild(createSoftDivider());
+
+  // --- Keyboard Shortcuts ---
+  const shortcutsSection = createCollapsibleSection(
+    "Keyboard Shortcuts",
+    "⌨️",
+    false
+  );
+  projectPanel.container.appendChild(shortcutsSection.section);
+
+  function updateSelectionDependentUI() {
+    shortcutsSection.section.style.opacity = state.selectedObject ? "1" : "0.6";
+  }
+
+  state.onSelectionChanged = () => {
+    updateSelectionDependentUI();
+  };
+  updateSelectionDependentUI();
+
+  shortcutsSection.content.appendChild(createKeyRow("A / D", "Move X"));
+  shortcutsSection.content.appendChild(createKeyRow("W / S ", "Move Y"));
+  shortcutsSection.content.appendChild(createKeyRow("Q / E", "Move Z"));
+  shortcutsSection.content.appendChild(createKeyRow("Z / X", "Scale ±"));
+  shortcutsSection.content.appendChild(createKeyRow("I / K", "Rotate X"));
+  shortcutsSection.content.appendChild(createKeyRow("U / J", "Rotate Y"));
+  shortcutsSection.content.appendChild(createKeyRow("Y / H", "Rotate Z"));
+  shortcutsSection.content.appendChild(createKeyRow("R", "Delete Object"));
+
+  // container.appendChild(createSoftDivider());
 
   // --- Objects in Scene ---
   const hasObjects = state.metadataList.length > 0;
+
+  const sceneGraphPanel = createFloatingPanel("sceneGraph", "🧩 Scene Graph");
 
   const objectsSection = createCollapsibleSection(
     "Objects in Scene",
     "🧩",
     hasObjects
   );
-  container.appendChild(objectsSection.section);
+  sceneGraphPanel.container.appendChild(objectsSection.section);
 
   if (!hasObjects) {
     const hint = document.createElement("div");
@@ -120,15 +154,18 @@ export function createSceneGraphUI() {
     );
   }
 
-  container.appendChild(createSoftDivider());
+  // container.appendChild(createSoftDivider());
 
   // --- Selection Tool ---
+
+  const toolsPanel = createFloatingPanel("tools", "🎯 Selection & Transform");
+
   const selectionSection = createCollapsibleSection(
     "Selection Tool",
     "🎯",
     false
   );
-  container.appendChild(selectionSection.section);
+  toolsPanel.container.appendChild(selectionSection.section);
 
   // Toggle selection volume
   const selectionBtn = createButton({
@@ -199,37 +236,37 @@ export function createSceneGraphUI() {
     ])
   );
 
-  container.appendChild(createSoftDivider());
+  sceneGraphPanel.container.style.left = "10px";
+  sceneGraphPanel.container.style.top = "10px";
 
-  // --- Keyboard Shortcuts ---
-  const shortcutsSection = createCollapsibleSection(
-    "Keyboard Shortcuts",
-    "⌨️",
-    false
-  );
-  container.appendChild(shortcutsSection.section);
+  toolsPanel.container.style.left = "270px";
+  toolsPanel.container.style.top = "10px";
 
-  function updateSelectionDependentUI() {
-    shortcutsSection.section.style.opacity = state.selectedObject ? "1" : "0.6";
-  }
-
-  state.onSelectionChanged = () => {
-    updateSelectionDependentUI();
-  };
-  updateSelectionDependentUI();
-
-  shortcutsSection.content.appendChild(createKeyRow("A / D", "Move X"));
-  shortcutsSection.content.appendChild(createKeyRow("W / S ", "Move Y"));
-  shortcutsSection.content.appendChild(createKeyRow("Q / E", "Move Z"));
-  shortcutsSection.content.appendChild(createKeyRow("Z / X", "Scale ±"));
-  shortcutsSection.content.appendChild(createKeyRow("I / K", "Rotate X"));
-  shortcutsSection.content.appendChild(createKeyRow("U / J", "Rotate Y"));
-  shortcutsSection.content.appendChild(createKeyRow("Y / H", "Rotate Z"));
-  shortcutsSection.content.appendChild(createKeyRow("R", "Delete Object"));
+  projectPanel.container.style.left = "10px";
+  projectPanel.container.style.top = "300px";
 
   // --- Drag & Resize Logic ---
 
-  enableDragAndResize(container, header, resizeHandle);
+  enableDragAndResize(
+    sceneGraphPanel.container,
+    sceneGraphPanel.header,
+    sceneGraphPanel.resizeHandle
+  );
 
-  document.body.appendChild(container);
+  enableDragAndResize(
+    toolsPanel.container,
+    toolsPanel.header,
+    toolsPanel.resizeHandle
+  );
+
+  enableDragAndResize(
+    projectPanel.container,
+    projectPanel.header,
+    projectPanel.resizeHandle
+  );
+
+  // document.body.appendChild(container);
+  document.body.appendChild(projectPanel.container);
+  document.body.appendChild(sceneGraphPanel.container);
+  document.body.appendChild(toolsPanel.container);
 }
