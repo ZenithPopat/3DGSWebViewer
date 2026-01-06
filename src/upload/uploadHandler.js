@@ -5,6 +5,7 @@ import { recomputeBoundingBoxForParsed } from "../splat/splatBounds.js";
 import { buildMergedBytes } from "../splat/splatMerge.js";
 import { createSceneGraphUI } from "../scene/createUI.js";
 import { waitForGaussianMeshReady } from "../utils/waitReady.js";
+import { recenterParsedSplats } from "../splat/recenterSplats.js";
 
 export async function handleFileUpload(files) {
   const scene = state.scene;
@@ -49,6 +50,9 @@ export async function handleFileUpload(files) {
       meta.parsed[i] = unpackSplatRecord(rawBytes, i);
     }
 
+    // RECENTER THIS FILE TO ORIGIN
+    recenterParsedSplats(meta.parsed);
+
     // Compute bbox
     recomputeBoundingBoxForParsed(meta);
 
@@ -81,6 +85,10 @@ export async function handleFileUpload(files) {
       );
       state.mergedMesh.updateData(state.mergedBytes.buffer);
     }
+
+    state.mergedMesh.position.set(0, 0, 0);
+    state.mergedMesh.rotationQuaternion = null;
+    state.mergedMesh.rotation.set(0, 0, 0);
 
     state.mergedMesh.computeWorldMatrix(true);
     state.mergedMesh.refreshBoundingInfo();
