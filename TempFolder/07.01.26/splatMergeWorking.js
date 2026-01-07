@@ -3,10 +3,10 @@ import { packSplatRecord } from "./splatFormat.js";
 import { state } from "../state/state.js";
 
 export function buildMergedBytes(metadataList) {
+  // Count splats excluding erased ones
   let totalSplats = 0;
   let globalIndex = 0;
 
-  // Count splats
   for (const meta of metadataList) {
     if (!meta.parsed) continue;
 
@@ -18,11 +18,13 @@ export function buildMergedBytes(metadataList) {
     }
   }
 
+  // Allocate buffer
   const merged = new Uint8Array(totalSplats * SPLAT_RECORD_BYTES);
 
   let writeIndex = 0;
   globalIndex = 0;
 
+  // Pack splats, skipping erased + applying highlight
   for (const meta of metadataList) {
     if (!meta.parsed) continue;
 
@@ -38,9 +40,7 @@ export function buildMergedBytes(metadataList) {
       const s = meta.parsed[i];
       const tmp = { ...s };
 
-      // Selection / highlight logic
-      const isSelectedSplat = state.selection?.splatIndices?.has(globalIndex);
-
+      const isSelectedSplat = state.selection.splatIndices.has(globalIndex);
       const isSelectedObject =
         state.selectedObject && meta.id === state.selectedObject.id;
 

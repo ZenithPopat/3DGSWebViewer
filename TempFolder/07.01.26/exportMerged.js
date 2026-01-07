@@ -1,10 +1,8 @@
 import { state } from "../state/state.js";
 import { downloadBlob } from "../utils/download.js";
 import { convertSplatsToPLY } from "./plyWriter.js";
-import { buildMergedBytes } from "../splat/splatMerge.js";
 
 export function exportMerged(as = "splat") {
-  state.mergedBytes = buildMergedBytes(state.metadataList);
   if (!state.mergedBytes) {
     alert("No splats loaded.");
     return;
