@@ -165,81 +165,101 @@ export function createSceneGraphUI() {
   container.appendChild(createSoftDivider());
 
   // --- Selection Tool ---
-  // const selectionSection = createCollapsibleSection(
-  //   "Selection Tool",
-  //   "🎯",
-  //   false
-  // );
-  // container.appendChild(selectionSection.section);
+  const selectionSection = createCollapsibleSection(
+    "Selection Tool",
+    "🎯",
+    false
+  );
+  container.appendChild(selectionSection.section);
 
-  // // Toggle selection volume
-  // // const selectionBtn = createButton({
-  // //   label: "🟦 Toggle Splat Selection Sphere",
-  // //   onClick: () => {
-  // //     if (isSelectionVolumeEnabled()) {
-  // //       disableSelectionVolume();
-  // //       selectionBtn.style.background = "#444";
-  // //     } else {
-  // //       enableSelectionVolume();
-  // //       selectionBtn.style.background = "#2d8dff";
-  // //     }
-  // //   },
-  // // });
-  // // selectionSection.content.appendChild(selectionBtn);
-
+  // Toggle selection volume
   // const selectionBtn = createButton({
-  //   label: "🎯 Enable Selection Tool",
+  //   label: "🟦 Toggle Splat Selection Sphere",
   //   onClick: () => {
-  //     const enabled = isSelectionVolumeEnabled();
-  //     if (enabled) {
+  //     if (isSelectionVolumeEnabled()) {
   //       disableSelectionVolume();
-  //       selectionBtn.textContent = "🎯 Enable Selection Tool";
   //       selectionBtn.style.background = "#444";
   //     } else {
   //       enableSelectionVolume();
-  //       selectionBtn.textContent = "🎯 Disable Selection Tool";
   //       selectionBtn.style.background = "#2d8dff";
   //     }
   //   },
   // });
   // selectionSection.content.appendChild(selectionBtn);
 
-  // const shapeLabel = document.createElement("div");
-  // shapeLabel.textContent = "Selection Shape";
-  // shapeLabel.style.fontSize = "12px";
-  // shapeLabel.style.opacity = "0.8";
-  // shapeLabel.style.margin = "6px 0 2px";
+  const selectionBtn = createButton({
+    label: "🎯 Enable Selection Tool",
+    onClick: () => {
+      const enabled = isSelectionVolumeEnabled();
+      if (enabled) {
+        disableSelectionVolume();
+        selectionBtn.textContent = "🎯 Enable Selection Tool";
+        selectionBtn.style.background = "#444";
+      } else {
+        enableSelectionVolume();
+        selectionBtn.textContent = "🎯 Disable Selection Tool";
+        selectionBtn.style.background = "#2d8dff";
+      }
+    },
+  });
+  selectionSection.content.appendChild(selectionBtn);
 
-  // selectionSection.content.appendChild(shapeLabel);
-  // // selectionSection.content.appendChild(shapeSelect);
+  const shapeLabel = document.createElement("div");
+  shapeLabel.textContent = "Selection Shape";
+  shapeLabel.style.fontSize = "12px";
+  shapeLabel.style.opacity = "0.8";
+  shapeLabel.style.margin = "6px 0 2px";
+
+  selectionSection.content.appendChild(shapeLabel);
+  // selectionSection.content.appendChild(shapeSelect);
+
+  const shapeSelect = document.createElement("select");
+
+  Object.assign(shapeSelect.style, {
+    width: "100%",
+    padding: "8px",
+    marginBottom: "6px",
+    borderRadius: "6px",
+    border: "1px solid #444",
+    background: "#333",
+    color: "#e5e5e5",
+    fontSize: "13px",
+    cursor: "pointer",
+    outline: "none",
+  });
+
+  shapeSelect.onmouseenter = () => {
+    shapeSelect.style.borderColor = "#555";
+  };
+  shapeSelect.onmouseleave = () => {
+    shapeSelect.style.borderColor = "#444";
+  };
+  shapeSelect.onfocus = () => {
+    shapeSelect.style.borderColor = "#2d8dff";
+  };
+  shapeSelect.onblur = () => {
+    shapeSelect.style.borderColor = "#444";
+  };
+
+  ["sphere", "box"].forEach((s) => {
+    const opt = document.createElement("option");
+    opt.value = s;
+    opt.textContent = s === "sphere" ? "Sphere Selection" : "Box Selection";
+    shapeSelect.appendChild(opt);
+  });
+
+  shapeSelect.value = state.selectionTool.shape;
+
+  shapeSelect.onchange = (e) => {
+    setSelectionShape(e.target.value);
+    syncSelectionSizeSlider();
+  };
+
+  selectionSection.content.appendChild(shapeSelect);
 
   // const shapeSelect = document.createElement("select");
-
-  // Object.assign(shapeSelect.style, {
-  //   width: "100%",
-  //   padding: "8px",
-  //   marginBottom: "6px",
-  //   borderRadius: "6px",
-  //   border: "1px solid #444",
-  //   background: "#333",
-  //   color: "#e5e5e5",
-  //   fontSize: "13px",
-  //   cursor: "pointer",
-  //   outline: "none",
-  // });
-
-  // shapeSelect.onmouseenter = () => {
-  //   shapeSelect.style.borderColor = "#555";
-  // };
-  // shapeSelect.onmouseleave = () => {
-  //   shapeSelect.style.borderColor = "#444";
-  // };
-  // shapeSelect.onfocus = () => {
-  //   shapeSelect.style.borderColor = "#2d8dff";
-  // };
-  // shapeSelect.onblur = () => {
-  //   shapeSelect.style.borderColor = "#444";
-  // };
+  // shapeSelect.style.width = "100%";
+  // shapeSelect.style.marginBottom = "6px";
 
   // ["sphere", "box"].forEach((s) => {
   //   const opt = document.createElement("option");
@@ -257,103 +277,83 @@ export function createSceneGraphUI() {
 
   // selectionSection.content.appendChild(shapeSelect);
 
-  // // const shapeSelect = document.createElement("select");
-  // // shapeSelect.style.width = "100%";
-  // // shapeSelect.style.marginBottom = "6px";
+  // Radius label
+  const radiusLabel = document.createElement("div");
+  radiusLabel.textContent = "Sphere Radius";
+  radiusLabel.style.fontSize = "12px";
+  radiusLabel.style.opacity = "0.8";
+  radiusLabel.style.margin = "6px 0 2px";
+  selectionSection.content.appendChild(radiusLabel);
 
-  // // ["sphere", "box"].forEach((s) => {
-  // //   const opt = document.createElement("option");
-  // //   opt.value = s;
-  // //   opt.textContent = s === "sphere" ? "Sphere Selection" : "Box Selection";
-  // //   shapeSelect.appendChild(opt);
-  // // });
+  // Radius slider
+  const radiusSlider = document.createElement("input");
+  radiusSlider.type = "range";
+  radiusSlider.min = "0.05";
+  radiusSlider.max = "5";
+  radiusSlider.step = "0.05";
+  radiusSlider.value = state.selectionTool.radius;
+  radiusSlider.style.width = "100%";
+  function syncSelectionSizeSlider() {
+    if (state.selectionTool.shape === "sphere") {
+      radiusLabel.textContent = "Sphere Radius";
+      radiusSlider.value = state.selectionTool.radius;
+    } else if (state.selectionTool.shape === "box") {
+      radiusLabel.textContent = "Box Size";
+      radiusSlider.value = state.selectionTool.boxSize.x;
+    }
+  }
+  radiusSlider.oninput = (e) => {
+    const value = Number(e.target.value);
 
-  // // shapeSelect.value = state.selectionTool.shape;
+    if (state.selectionTool.shape === "sphere") {
+      setSelectionVolumeRadius(value);
+    } else if (state.selectionTool.shape === "box") {
+      setSelectionBoxSize(value, value, value);
+    }
+  };
+  selectionSection.content.appendChild(radiusSlider);
+  syncSelectionSizeSlider();
 
-  // // shapeSelect.onchange = (e) => {
-  // //   setSelectionShape(e.target.value);
-  // //   syncSelectionSizeSlider();
-  // // };
+  // Restrict checkbox
+  const restrictWrapper = document.createElement("label");
+  restrictWrapper.style.display = "flex";
+  restrictWrapper.style.gap = "6px";
+  restrictWrapper.style.marginTop = "6px";
 
-  // // selectionSection.content.appendChild(shapeSelect);
+  const restrictCheckbox = document.createElement("input");
+  restrictCheckbox.type = "checkbox";
+  restrictCheckbox.checked = state.selection.restrictToSelectedObject;
+  restrictCheckbox.onchange = () => {
+    state.selection.restrictToSelectedObject = restrictCheckbox.checked;
+  };
 
-  // // Radius label
-  // const radiusLabel = document.createElement("div");
-  // radiusLabel.textContent = "Sphere Radius";
-  // radiusLabel.style.fontSize = "12px";
-  // radiusLabel.style.opacity = "0.8";
-  // radiusLabel.style.margin = "6px 0 2px";
-  // selectionSection.content.appendChild(radiusLabel);
+  const restrictText = document.createElement("span");
+  restrictText.textContent = "Restrict to selected object";
 
-  // // Radius slider
-  // const radiusSlider = document.createElement("input");
-  // radiusSlider.type = "range";
-  // radiusSlider.min = "0.05";
-  // radiusSlider.max = "5";
-  // radiusSlider.step = "0.05";
-  // radiusSlider.value = state.selectionTool.radius;
-  // radiusSlider.style.width = "100%";
-  // function syncSelectionSizeSlider() {
-  //   if (state.selectionTool.shape === "sphere") {
-  //     radiusLabel.textContent = "Sphere Radius";
-  //     radiusSlider.value = state.selectionTool.radius;
-  //   } else if (state.selectionTool.shape === "box") {
-  //     radiusLabel.textContent = "Box Size";
-  //     radiusSlider.value = state.selectionTool.boxSize.x;
-  //   }
-  // }
-  // radiusSlider.oninput = (e) => {
-  //   const value = Number(e.target.value);
+  restrictWrapper.append(restrictCheckbox, restrictText);
+  selectionSection.content.appendChild(restrictWrapper);
 
-  //   if (state.selectionTool.shape === "sphere") {
-  //     setSelectionVolumeRadius(value);
-  //   } else if (state.selectionTool.shape === "box") {
-  //     setSelectionBoxSize(value, value, value);
-  //   }
-  // };
-  // selectionSection.content.appendChild(radiusSlider);
-  // syncSelectionSizeSlider();
+  // Action buttons
+  selectionSection.content.appendChild(
+    createButtonRow([
+      createButton({
+        label: "✅ Set",
+        variant: "primary",
+        onClick: applySelectionVolume,
+      }),
+      createButton({
+        label: "❌ Clear",
+        onClick: clearSelection,
+      }),
+      createButton({
+        label: "🗑️ Erase",
+        variant: "danger",
+        onClick: eraseSelectedSplats,
+      }),
+    ])
+  );
 
-  // // Restrict checkbox
-  // const restrictWrapper = document.createElement("label");
-  // restrictWrapper.style.display = "flex";
-  // restrictWrapper.style.gap = "6px";
-  // restrictWrapper.style.marginTop = "6px";
-
-  // const restrictCheckbox = document.createElement("input");
-  // restrictCheckbox.type = "checkbox";
-  // restrictCheckbox.checked = state.selection.restrictToSelectedObject;
-  // restrictCheckbox.onchange = () => {
-  //   state.selection.restrictToSelectedObject = restrictCheckbox.checked;
-  // };
-
-  // const restrictText = document.createElement("span");
-  // restrictText.textContent = "Restrict to selected object";
-
-  // restrictWrapper.append(restrictCheckbox, restrictText);
-  // selectionSection.content.appendChild(restrictWrapper);
-
-  // // Action buttons
-  // selectionSection.content.appendChild(
-  //   createButtonRow([
-  //     createButton({
-  //       label: "✅ Set",
-  //       variant: "primary",
-  //       onClick: applySelectionVolume,
-  //     }),
-  //     createButton({
-  //       label: "❌ Clear",
-  //       onClick: clearSelection,
-  //     }),
-  //     createButton({
-  //       label: "🗑️ Erase",
-  //       variant: "danger",
-  //       onClick: eraseSelectedSplats,
-  //     }),
-  //   ])
-  // );
-
-  // container.appendChild(createSoftDivider());
+  container.appendChild(createSoftDivider());
 
   // --- Keyboard Shortcuts ---
   const shortcutsSection = createCollapsibleSection(
