@@ -18,7 +18,7 @@ export async function handleFileUpload(files) {
       file.name,
       url,
       scene,
-      true
+      true,
     );
 
     // SAFELY WAIT for the mesh to load in ANY Babylon version
@@ -43,6 +43,11 @@ export async function handleFileUpload(files) {
       endIndex: 0,
       boundingBox: null,
       visible: true,
+      localTransform: {
+        position: new BABYLON.Vector3(0, 0, 0),
+        rotation: new BABYLON.Quaternion(0, 0, 0, 1),
+        scale: new BABYLON.Vector3(1, 1, 1),
+      },
     };
 
     // Parse every splat into JS objects
@@ -70,7 +75,7 @@ export async function handleFileUpload(files) {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      scene
+      scene,
     );
 
     try {
@@ -81,7 +86,7 @@ export async function handleFileUpload(files) {
       state.mergedMesh = new BABYLON.GaussianSplattingMesh(
         "merged",
         undefined,
-        scene
+        scene,
       );
       state.mergedMesh.updateData(state.mergedBytes.buffer);
     }

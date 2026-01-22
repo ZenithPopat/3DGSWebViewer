@@ -1,9 +1,14 @@
 import { state } from "../state/state.js";
+// import {
+//   translateObject,
+//   scaleObjectPerSplat,
+//   rotateObjectPerSplat,
+// } from "../splat/splatTransforms.js";
 import {
-  translateObject,
-  scaleObjectPerSplat,
-  rotateObjectPerSplat,
-} from "../splat/splatTransforms.js";
+  moveObject,
+  rotateObject,
+  scaleObject,
+} from "../splat/splatLogicalTrasnform.js";
 import { removeObject } from "../splat/removeObject.js";
 
 export function setupKeyboardControls() {
@@ -15,48 +20,50 @@ export function setupKeyboardControls() {
 
     switch (event.key.toLowerCase()) {
       case "w":
-        translateObject(meta, 0, step, 0);
+        moveObject(meta, 0, step, 0);
         break;
       case "s":
-        translateObject(meta, 0, -step, 0);
+        moveObject(meta, 0, -step, 0);
         break;
       case "a":
-        translateObject(meta, -step, 0, 0);
+        moveObject(meta, -step, 0, 0);
         break;
       case "d":
-        translateObject(meta, step, 0, 0);
+        moveObject(meta, step, 0, 0);
         break;
       case "q":
-        translateObject(meta, 0, 0, -step);
+        moveObject(meta, 0, 0, -step);
         break;
       case "e":
-        translateObject(meta, 0, 0, step);
+        moveObject(meta, 0, 0, step);
         break;
 
       case "z":
-        scaleObjectPerSplat(meta, 1.05);
+        scaleObject(meta, 1.05);
         break;
       case "x":
-        scaleObjectPerSplat(meta, 0.95);
+        scaleObject(meta, 0.95);
         break;
 
       case "i":
-        rotateObjectPerSplat(meta, "x", -5);
+        // rotateObject(meta, "x", -5);
+        rotateObject(meta, BABYLON.Axis.X, -5);
         break;
       case "k":
-        rotateObjectPerSplat(meta, "x", 5);
+        // rotateObject(meta, "x", 5);
+        rotateObject(meta, BABYLON.Axis.X, 5);
         break;
       case "u":
-        rotateObjectPerSplat(meta, "y", -5);
+        rotateObject(meta, BABYLON.Axis.Y, -5);
         break;
       case "j":
-        rotateObjectPerSplat(meta, "y", 5);
+        rotateObject(meta, BABYLON.Axis.Y, 5);
         break;
       case "y":
-        rotateObjectPerSplat(meta, "z", -5);
+        rotateObject(meta, BABYLON.Axis.Z, -5);
         break;
       case "h":
-        rotateObjectPerSplat(meta, "z", 5);
+        rotateObject(meta, BABYLON.Axis.Z, 5);
         break;
 
       case "r":

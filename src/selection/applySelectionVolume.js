@@ -1,6 +1,6 @@
 import * as BABYLON from "@babylonjs/core";
 import { state } from "../state/state.js";
-import { rebuildMergedMeshWithSelection } from "./rebuildWithSelection.js";
+import { rebuildMergedMeshFromData } from "./rebuildWithSelection.js";
 
 export function applySelectionVolume() {
   const tool = state.selectionTool;
@@ -57,5 +57,6 @@ export function applySelectionVolume() {
     }
   }
 
-  rebuildMergedMeshWithSelection();
+  state.selection.previewHighlight = true;
+  rebuildMergedMeshFromData(); // ONE rebuild
 }

@@ -10,5 +10,5 @@ export function deselectObject() {
   }
 
   // Update visuals (remove object highlight)
-  rebuildMergedMeshWithSelection();
+  // rebuildMergedMeshWithSelection();
 }

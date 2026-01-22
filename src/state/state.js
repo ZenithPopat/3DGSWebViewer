@@ -17,6 +17,7 @@ export const state = {
   selection: {
     splatIndices: new Set(), // merged splat indices
     objectId: null, // future: restrict to one object
+    previewHighlight: false,
     restrictToSelectedObject: false,
   },
   erase: {

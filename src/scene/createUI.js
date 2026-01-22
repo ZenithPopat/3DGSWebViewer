@@ -17,6 +17,7 @@ import { applySelectionVolume } from "../selection/applySelectionVolume.js";
 import { clearSelection } from "../selection/clearSelection.js";
 import { selectObject, deselectObject } from "../splat/splatSelection.js";
 import { eraseSelectedSplats } from "../selection/eraseSelectedSplats.js";
+import { bakeAllTransforms } from "../splat/bakeTransforms.js";
 
 import {
   createSoftDivider,
@@ -36,14 +37,14 @@ export function createSceneGraphUI() {
 
   const { container, header, resizeHandle } = createFloatingPanel(
     "sceneGraph",
-    "Editor Panel"
+    "Editor Panel",
   );
 
   // --- Import / Export ---
   const importExport = createCollapsibleSection(
     "Import / Export Files",
     "📁",
-    true
+    true,
   );
   container.appendChild(importExport.section);
 
@@ -62,7 +63,18 @@ export function createSceneGraphUI() {
     createButton({
       label: "+ Add .splat files",
       onClick: () => fileInput.click(),
-    })
+    }),
+  );
+
+  importExport.content.appendChild(
+    createButton({
+      label: "🔥 Bake Transforms",
+      variant: "primary",
+      onClick: () => {
+        bakeAllTransforms();
+        createSceneGraphUI();
+      },
+    }),
   );
 
   // Export buttons
@@ -77,7 +89,7 @@ export function createSceneGraphUI() {
         label: "⬇ Export Each (Local Space)",
         onClick: () => exportIndividually("splat"),
       }),
-    ])
+    ]),
   );
 
   importExport.content.appendChild(createSoftDivider("8px 0"));
@@ -109,7 +121,7 @@ export function createSceneGraphUI() {
     onClick: () => {
       window.open(
         "https://huggingface.co/spaces/dylanebert/ply-to-splat",
-        "_blank"
+        "_blank",
       );
     },
   });
@@ -126,7 +138,7 @@ export function createSceneGraphUI() {
   const objectsSection = createCollapsibleSection(
     "Objects in Scene",
     "🧩",
-    hasObjects
+    hasObjects,
   );
   container.appendChild(objectsSection.section);
 
@@ -158,7 +170,7 @@ export function createSceneGraphUI() {
       createButton({
         label: "⬜ Deselect Object",
         onClick: deselectObject,
-      })
+      }),
     );
   }
 
@@ -168,7 +180,7 @@ export function createSceneGraphUI() {
   const selectionSection = createCollapsibleSection(
     "Selection Tool",
     "🎯",
-    false
+    false,
   );
   container.appendChild(selectionSection.section);
 
@@ -350,7 +362,7 @@ export function createSceneGraphUI() {
         variant: "danger",
         onClick: eraseSelectedSplats,
       }),
-    ])
+    ]),
   );
 
   container.appendChild(createSoftDivider());
@@ -359,7 +371,7 @@ export function createSceneGraphUI() {
   const shortcutsSection = createCollapsibleSection(
     "Keyboard Shortcuts",
     "⌨️",
-    false
+    false,
   );
   container.appendChild(shortcutsSection.section);
 
