@@ -8,7 +8,7 @@ import {
   moveObject,
   rotateObject,
   scaleObject,
-} from "../splat/splatLogicalTrasnform.js";
+} from "../splat/splatLogicalTransform.js";
 import { removeObject } from "../splat/removeObject.js";
 
 export function setupKeyboardControls() {

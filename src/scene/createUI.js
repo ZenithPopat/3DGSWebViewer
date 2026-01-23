@@ -29,6 +29,7 @@ import {
   createObjectRow,
   createKeyRow,
 } from "./uiBuilders.js";
+import { undoTransform, redoTransform } from "../splat/splatUndoRedo.js";
 
 export function createSceneGraphUI() {
   // Remove old UI
@@ -66,16 +67,75 @@ export function createSceneGraphUI() {
     }),
   );
 
+  const selected = state.selectedObject;
+
+  const canUndo =
+    selected && selected.undoStack && selected.undoStack.length > 0;
+
+  const canRedo =
+    selected && selected.redoStack && selected.redoStack.length > 0;
+
+  const hasUnbakedAnything = state.metadataList.some(
+    (m) => m.hasUnbakedTransform,
+  );
+
+  importExport.content.appendChild(
+    createButtonRow([
+      createButton({
+        label: "↶ Undo Transform",
+        variant: "primary",
+        disabled: !canUndo,
+        onClick: () => {
+          undoTransform();
+          createSceneGraphUI();
+        },
+      }),
+      createButton({
+        label: "↷ Redo Transform",
+        disabled: !canRedo,
+        onClick: () => {
+          redoTransform();
+          createSceneGraphUI();
+        },
+      }),
+    ]),
+  );
+
   importExport.content.appendChild(
     createButton({
       label: "🔥 Bake Transforms",
       variant: "primary",
+      disabled: !hasUnbakedAnything,
       onClick: () => {
         bakeAllTransforms();
         createSceneGraphUI();
       },
     }),
   );
+
+  // importExport.content.appendChild(
+  //   createButton({
+  //     label: "↶ Undo Transform",
+  //     variant: "primary",
+  //     disabled: !canUndo,
+  //     onClick: () => {
+  //       undoTransform();
+  //       createSceneGraphUI();
+  //     },
+  //   }),
+  // );
+
+  // importExport.content.appendChild(
+  //   createButton({
+  //     label: "↷ Redo Transform",
+  //     variant: "primary",
+  //     disabled: !canRedo,
+  //     onClick: () => {
+  //       redoTransform();
+  //       createSceneGraphUI();
+  //     },
+  //   }),
+  // );
 
   // Export buttons
   importExport.content.appendChild(

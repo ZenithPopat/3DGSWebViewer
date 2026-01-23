@@ -12,6 +12,9 @@ import {
 
 export function bakeAllTransforms() {
   for (const meta of state.metadataList) {
+    meta.hasUnbakedTransform = false;
+    meta.undoStack.length = 0;
+    meta.redoStack.length = 0;
     const T = meta.localTransform;
 
     const isIdentity =

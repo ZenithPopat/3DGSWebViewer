@@ -5,7 +5,6 @@ import { recomputeBoundingBoxForParsed } from "../splat/splatBounds.js";
 import { buildMergedBytes } from "../splat/splatMerge.js";
 import { createSceneGraphUI } from "../scene/createUI.js";
 import { waitForGaussianMeshReady } from "../utils/waitReady.js";
-import { recenterParsedSplats } from "../splat/recenterSplats.js";
 
 export async function handleFileUpload(files) {
   const scene = state.scene;
@@ -43,20 +42,20 @@ export async function handleFileUpload(files) {
       endIndex: 0,
       boundingBox: null,
       visible: true,
+      hasUnbakedTransform: false,
       localTransform: {
         position: new BABYLON.Vector3(0, 0, 0),
         rotation: new BABYLON.Quaternion(0, 0, 0, 1),
         scale: new BABYLON.Vector3(1, 1, 1),
       },
+      undoStack: [],
+      redoStack: [],
     };
 
     // Parse every splat into JS objects
     for (let i = 0; i < splatCount; i++) {
       meta.parsed[i] = unpackSplatRecord(rawBytes, i);
     }
-
-    // RECENTER THIS FILE TO ORIGIN
-    recenterParsedSplats(meta.parsed);
 
     // Compute bbox
     recomputeBoundingBoxForParsed(meta);

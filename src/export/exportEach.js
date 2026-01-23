@@ -17,7 +17,7 @@ export function exportIndividually(as = "splat") {
       downloadBlob(
         plyText,
         meta.fileName.replace(".splat", "_export.ply"),
-        "text/plain"
+        "text/plain",
       );
     }
   });

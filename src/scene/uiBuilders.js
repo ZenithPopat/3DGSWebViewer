@@ -1,3 +1,5 @@
+import { recenterObjectToCamera } from "../splat/recenterToCamera";
+
 export function createFloatingPanel(id, title) {
   const container = document.createElement("div");
   container.id = id;
@@ -67,6 +69,7 @@ export function createButton({
   onClick,
   variant = "default",
   fullWidth = true,
+  disabled = false,
 }) {
   const btn = document.createElement("button");
 
@@ -77,18 +80,32 @@ export function createButton({
   };
 
   btn.textContent = label;
+  // Object.assign(btn.style, {
+  //   width: fullWidth ? "100%" : "auto",
+  //   padding: "8px",
+  //   border: "none",
+  //   borderRadius: "6px",
+  //   background: colors[variant],
+  //   color: "white",
+  //   cursor: "pointer",
+  //   margin: "4px 0",
+  // });
+
   Object.assign(btn.style, {
     width: fullWidth ? "100%" : "auto",
     padding: "8px",
     border: "none",
     borderRadius: "6px",
-    background: colors[variant],
-    color: "white",
-    cursor: "pointer",
+    background: disabled ? "rgba(255,255,255,0.12)" : colors[variant],
+    color: disabled ? "rgba(255,255,255,0.5)" : "white",
+    cursor: disabled ? "not-allowed" : "pointer",
     margin: "4px 0",
+    opacity: disabled ? "0.6" : "1",
+    transition: "background 0.15s ease, opacity 0.15s ease",
   });
 
-  btn.onclick = onClick;
+  btn.disabled = disabled;
+  if (!disabled) btn.onclick = onClick;
   return btn;
 }
 
@@ -108,7 +125,7 @@ export function createButtonRow(buttons, gap = "6px") {
 export function createCollapsibleSection(
   title,
   icon = "",
-  initiallyOpen = true
+  initiallyOpen = true,
 ) {
   const section = document.createElement("div");
 
@@ -163,7 +180,7 @@ export function createCollapsibleSection(
 
 export function createObjectRow(
   meta,
-  { onSelect, onFocus, onDelete, onToggleVisibility, isSelected }
+  { onSelect, onFocus, onDelete, onToggleVisibility, isSelected },
 ) {
   const row = document.createElement("div");
   Object.assign(row.style, {
@@ -186,7 +203,10 @@ export function createObjectRow(
   };
 
   const name = document.createElement("div");
-  name.textContent = meta.fileName.replace(/\.(splat)$/, "");
+  // name.textContent = meta.fileName.replace(/\.(splat)$/, "");
+  name.textContent =
+    meta.fileName.replace(/\.(splat)$/, "") +
+    (meta.hasUnbakedTransform ? " *" : "");
   Object.assign(name.style, {
     flex: "1",
     whiteSpace: "nowrap",
@@ -194,6 +214,11 @@ export function createObjectRow(
     textOverflow: "ellipsis",
   });
   name.onclick = onSelect;
+
+  if (meta.hasUnbakedTransform) {
+    name.title = "Unbaked changes";
+    name.style.opacity = "0.9";
+  }
 
   const tools = document.createElement("div");
   tools.style.display = "flex";
@@ -204,6 +229,14 @@ export function createObjectRow(
   camBtn.onclick = (e) => {
     e.stopPropagation();
     onFocus();
+  };
+
+  const recenterBtn = document.createElement("span");
+  recenterBtn.textContent = "📍";
+  recenterBtn.title = "Recenter to Camera";
+  recenterBtn.onclick = (e) => {
+    e.stopPropagation();
+    recenterObjectToCamera(meta);
   };
 
   const delBtn = document.createElement("span");
@@ -221,7 +254,7 @@ export function createObjectRow(
     onToggleVisibility();
   };
 
-  tools.append(camBtn, delBtn, eyeBtn);
+  tools.append(camBtn, recenterBtn, delBtn, eyeBtn);
   row.append(name, tools);
 
   return row;

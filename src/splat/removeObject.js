@@ -6,6 +6,12 @@ import { createSceneGraphUI } from "../scene/createUI.js";
 export function removeObject(meta) {
   const scene = state.scene;
 
+  const ok = confirm(
+    `Delete object "${meta.fileName}"?\nThis action cannot be undone.`,
+  );
+
+  if (!ok) return;
+
   // 1. Remove from metadata list
   state.metadataList = state.metadataList.filter((m) => m.id !== meta.id);
 
@@ -30,7 +36,7 @@ export function removeObject(meta) {
   state.mergedMesh = new BABYLON.GaussianSplattingMesh(
     "merged",
     undefined,
-    scene
+    scene,
   );
 
   try {
@@ -41,7 +47,7 @@ export function removeObject(meta) {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      scene
+      scene,
     );
     state.mergedMesh.updateData(state.mergedBytes.buffer);
   }
