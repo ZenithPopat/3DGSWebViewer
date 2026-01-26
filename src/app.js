@@ -15,6 +15,9 @@ BABYLON.Logger.LogLevels = BABYLON.Logger.ErrorLogging;
 
   const interacting = isEffectivelyInteracting();
   let lastInteracting = null;
+  const IDLE_SCALING = 1.0;
+  const INTERACTION_SCALING = 1.5;
+  let lastScalingLevel = IDLE_SCALING;
 
   const fpsDiv = document.createElement("div");
   fpsDiv.style.position = "fixed";
@@ -57,10 +60,24 @@ BABYLON.Logger.LogLevels = BABYLON.Logger.ErrorLogging;
   });
 
   engine.runRenderLoop(() => {
-    if (state.scene) {
-      state.scene.render();
+    if (!state.scene) return;
+
+    const interacting = isEffectivelyInteracting();
+    const targetScaling = interacting ? INTERACTION_SCALING : IDLE_SCALING;
+
+    if (targetScaling !== lastScalingLevel) {
+      engine.setHardwareScalingLevel(targetScaling);
+      lastScalingLevel = targetScaling;
     }
+
+    state.scene.render();
   });
+
+  // engine.runRenderLoop(() => {
+  //   if (state.scene) {
+  //     state.scene.render();
+  //   }
+  // });
 
   // engine.runRenderLoop(() => {
   //   if (!state.scene) return;
