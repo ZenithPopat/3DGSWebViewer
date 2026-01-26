@@ -79,18 +79,5 @@ BABYLON.Logger.LogLevels = BABYLON.Logger.ErrorLogging;
   //   }
   // });
 
-  // engine.runRenderLoop(() => {
-  //   if (!state.scene) return;
-
-  //   const interacting = isEffectivelyInteracting();
-
-  //   if (interacting !== lastInteracting) {
-  //     console.log("Effective interaction:", interacting);
-  //     lastInteracting = interacting;
-  //   }
-
-  //   state.scene.render();
-  // });
-
   window.addEventListener("resize", () => engine.resize());
 })();

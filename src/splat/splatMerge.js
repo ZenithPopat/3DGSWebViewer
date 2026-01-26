@@ -3,62 +3,134 @@ import { packSplatRecord } from "./splatFormat.js";
 import { state } from "../state/state.js";
 
 export function buildMergedBytes(metadataList) {
-  let totalSplats = 0;
-  let globalIndex = 0;
-  // state.stats.totalSplats ??= 0;
-  // state.stats.visibleSplats ??= 0;
+  const { alphaThreshold, maxViewDistance } = state.renderSettings;
+  const bounds = state.sceneStats.bounds;
 
-  // Count splats
+  const cam = state.scene?.activeCamera;
+  const camPos = cam?.position;
+
+  // ==================================================
+  // PASS 1 — COUNT visible splats (ALL filters applied)
+  // ==================================================
+  let visibleSplats = 0;
+
   for (const meta of metadataList) {
     if (!meta.parsed) continue;
 
-    for (let i = 0; i < meta.parsed.length; i++) {
-      if (!state.erase?.erasedSplatIndices?.has(globalIndex)) {
-        totalSplats++;
+    for (const s of meta.parsed) {
+      // ---- Alpha filtering ----
+      const alpha = s.a ?? 1.0;
+      if (alpha < alphaThreshold) continue;
+
+      // ---- Bounding-box pruning (scene outliers) ----
+      if (bounds) {
+        if (
+          s.px < bounds.min.x ||
+          s.py < bounds.min.y ||
+          s.pz < bounds.min.z ||
+          s.px > bounds.max.x ||
+          s.py > bounds.max.y ||
+          s.pz > bounds.max.z
+        ) {
+          continue;
+        }
       }
-      globalIndex++;
+
+      // ---- View-distance culling (optional) ----
+      if (camPos && isFinite(maxViewDistance)) {
+        const dx = s.px - camPos.x;
+        const dy = s.py - camPos.y;
+        const dz = s.pz - camPos.z;
+        if (dx * dx + dy * dy + dz * dz > maxViewDistance * maxViewDistance) {
+          continue;
+        }
+      }
+
+      visibleSplats++;
     }
   }
 
-  const merged = new Uint8Array(totalSplats * SPLAT_RECORD_BYTES);
+  // Allocate exact-sized GPU buffer
+  const merged = new Uint8Array(visibleSplats * SPLAT_RECORD_BYTES);
 
+  // mergedIndex → { meta, parsedIndex }
+  state.mergeMap = [];
+
+  // ==================================================
+  // PASS 2 — PACK splats + build mergeMap
+  // ==================================================
   let writeIndex = 0;
-  globalIndex = 0;
 
   for (const meta of metadataList) {
     if (!meta.parsed) continue;
 
-    meta.startIndex = writeIndex;
     let keptCount = 0;
 
     for (let i = 0; i < meta.parsed.length; i++) {
-      if (state.erase?.erasedSplatIndices?.has(globalIndex)) {
-        globalIndex++;
-        continue;
+      const s = meta.parsed[i];
+
+      // ---- Alpha filtering ----
+      const alpha = s.a ?? 1.0;
+      if (alpha < alphaThreshold) continue;
+
+      // ---- Bounding-box pruning ----
+      if (bounds) {
+        if (
+          s.px < bounds.min.x ||
+          s.py < bounds.min.y ||
+          s.pz < bounds.min.z ||
+          s.px > bounds.max.x ||
+          s.py > bounds.max.y ||
+          s.pz > bounds.max.z
+        ) {
+          continue;
+        }
       }
 
-      const s = meta.parsed[i];
+      if (s.scale !== undefined && s.scale < 0.01) continue;
+      if (s.sigma !== undefined && s.sigma < threshold) continue;
+
+      // ---- View-distance culling ----
+      if (camPos && isFinite(maxViewDistance)) {
+        const dx = s.px - camPos.x;
+        const dy = s.py - camPos.y;
+        const dz = s.pz - camPos.z;
+        if (dx * dx + dy * dy + dz * dz > maxViewDistance * maxViewDistance) {
+          continue;
+        }
+      }
+
+      // Copy splat so color edits are safe
       const tmp = { ...s };
 
-      if (state.selection.previewHighlight) {
-        if (state.selection.splatIndices.has(globalIndex)) {
-          tmp.r = 255;
-          tmp.g = 255;
-          tmp.b = 0;
-        }
+      // ---- Selection preview highlight ----
+      if (
+        state.selection.previewHighlight &&
+        state.selection.splatIndices.has(writeIndex)
+      ) {
+        tmp.r = 255;
+        tmp.g = 255;
+        tmp.b = 0;
       }
 
       packSplatRecord(merged, writeIndex, tmp);
 
+      // ---- Mapping for destructive erase ----
+      state.mergeMap[writeIndex] = {
+        meta,
+        parsedIndex: i,
+      };
+
       writeIndex++;
       keptCount++;
-      globalIndex++;
     }
 
+    // Informational only — never use for logic
     meta.splatCount = keptCount;
-    meta.endIndex = meta.startIndex + keptCount;
   }
-  // state.stats.totalSplats = totalSplats;
-  state.stats.visibleSplats = totalSplats;
+
+  // Final stats
+  state.stats.visibleSplats = visibleSplats;
+
   return merged;
 }

@@ -1,5 +1,6 @@
 import { state } from "../state/state.js";
 import { rebuildMergedMeshFromData } from "./rebuildWithSelection.js";
+import { recomputeBoundingBoxForParsed } from "../splat/splatBounds.js";
 
 export function eraseSelectedSplats() {
   if (state.selection.splatIndices.size === 0) return;
@@ -10,19 +11,39 @@ export function eraseSelectedSplats() {
 
   if (!ok) return;
 
+  // for (const meta of state.metadataList) {
+  //   if (!meta.parsed) continue;
+
+  //   const newParsed = [];
+  //   let globalIndex = meta.startIndex;
+
+  //   for (let i = 0; i < meta.parsed.length; i++, globalIndex++) {
+  //     if (!state.selection.splatIndices.has(globalIndex)) {
+  //       newParsed.push(meta.parsed[i]);
+  //     }
+  //   }
+
+  //   meta.parsed = newParsed;
+  // }
+
+  for (const mergedIndex of state.selection.splatIndices) {
+    const entry = state.mergeMap[mergedIndex];
+    if (!entry) continue;
+
+    const { meta, parsedIndex } = entry;
+    meta.parsed[parsedIndex] = null;
+  }
+
   for (const meta of state.metadataList) {
-    if (!meta.parsed) continue;
+    meta.parsed = meta.parsed.filter(Boolean);
+  }
 
-    const newParsed = [];
-    let globalIndex = meta.startIndex;
-
-    for (let i = 0; i < meta.parsed.length; i++, globalIndex++) {
-      if (!state.selection.splatIndices.has(globalIndex)) {
-        newParsed.push(meta.parsed[i]);
-      }
+  for (const meta of state.metadataList) {
+    if (meta.parsed.length > 0) {
+      recomputeBoundingBoxForParsed(meta);
+    } else {
+      meta.boundingBox = null;
     }
-
-    meta.parsed = newParsed;
   }
 
   state.selection.splatIndices.clear();

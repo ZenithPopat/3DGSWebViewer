@@ -9,7 +9,6 @@ import {
   bakeRotateParsed,
   bakeRotateParsedQuat,
 } from "../utils/bakeTransformUtils.js";
-import { computeSceneBounds } from "../utils/computeSceneBounds.js";
 
 export function bakeAllTransforms() {
   for (const meta of state.metadataList) {
@@ -49,31 +48,8 @@ export function bakeAllTransforms() {
     recomputeBoundingBoxForParsed(meta);
   }
 
-  // Recompute scene bounds AFTER baking (CRITICAL)
-  state.sceneStats.bounds = computeSceneBounds(state.metadataList);
-
-  // ---- Rebuild merged data ----
   state.mergedBytes = buildMergedBytes(state.metadataList);
-
-  // ---- HARD RESET merged mesh ----
-  if (state.mergedMesh) {
-    state.mergedMesh.dispose();
-  }
-
-  state.mergedMesh = new BABYLON.GaussianSplattingMesh(
-    "merged",
-    undefined,
-    state.scene,
-  );
-
   state.mergedMesh.updateData(state.mergedBytes.buffer);
-
-  // Reset transforms
-  state.mergedMesh.position.set(0, 0, 0);
-  state.mergedMesh.rotationQuaternion = null;
-  state.mergedMesh.rotation.set(0, 0, 0);
-
-  state.mergedMesh.computeWorldMatrix(true);
   state.mergedMesh.refreshBoundingInfo(true);
   state.mergedMesh.freezeWorldMatrix();
 }

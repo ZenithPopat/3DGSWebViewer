@@ -40,6 +40,17 @@ export const state = {
     interactionMode: "IDLE", // IDLE | TRANSFORM | SELECT
     lastInteractionTime: 0,
   },
+  renderSettings: {
+    // alphaThreshold: 0.01, // default alpha cutoff
+    alphaThreshold: 0.1, // default alpha cutoff
+    maxViewDistance: Infinity, // or null
+    scenePruneRadius: null,
+  },
+  sceneStats: {
+    // center: null,
+    // maxSceneRadius: null,
+    bounds: null,
+  },
 };
 
 state.stats.totalSplats ??= 0;

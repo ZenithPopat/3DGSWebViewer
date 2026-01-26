@@ -5,6 +5,7 @@ import { recomputeBoundingBoxForParsed } from "../splat/splatBounds.js";
 import { buildMergedBytes } from "../splat/splatMerge.js";
 import { createSceneGraphUI } from "../scene/createUI.js";
 import { waitForGaussianMeshReady } from "../utils/waitReady.js";
+import { computeSceneBounds } from "../utils/computeSceneBounds.js";
 
 export async function handleFileUpload(files) {
   const scene = state.scene;
@@ -64,6 +65,8 @@ export async function handleFileUpload(files) {
 
     // Add to global metadata list
     state.metadataList.push(meta);
+
+    state.sceneStats.bounds = computeSceneBounds(state.metadataList);
 
     // Rebuild merged splats
     state.mergedBytes = buildMergedBytes(state.metadataList);
