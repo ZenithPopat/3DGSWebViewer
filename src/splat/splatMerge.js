@@ -5,6 +5,8 @@ import { state } from "../state/state.js";
 export function buildMergedBytes(metadataList) {
   let totalSplats = 0;
   let globalIndex = 0;
+  // state.stats.totalSplats ??= 0;
+  // state.stats.visibleSplats ??= 0;
 
   // Count splats
   for (const meta of metadataList) {
@@ -38,7 +40,6 @@ export function buildMergedBytes(metadataList) {
       const s = meta.parsed[i];
       const tmp = { ...s };
 
-      // Selection / highlight logic
       if (state.selection.previewHighlight) {
         if (state.selection.splatIndices.has(globalIndex)) {
           tmp.r = 255;
@@ -46,20 +47,6 @@ export function buildMergedBytes(metadataList) {
           tmp.b = 0;
         }
       }
-      // const isSelectedSplat = state.selection?.splatIndices?.has(globalIndex);
-
-      // const isSelectedObject =
-      //   state.selectedObject && meta.id === state.selectedObject.id;
-
-      // if (isSelectedSplat) {
-      //   tmp.r = 255;
-      //   tmp.g = 255;
-      //   tmp.b = 0;
-      // } else if (isSelectedObject) {
-      //   tmp.r = Math.min(255, tmp.r + 30);
-      //   tmp.g = Math.min(255, tmp.g + 60);
-      //   tmp.b = Math.min(255, tmp.b + 80);
-      // }
 
       packSplatRecord(merged, writeIndex, tmp);
 
@@ -71,6 +58,7 @@ export function buildMergedBytes(metadataList) {
     meta.splatCount = keptCount;
     meta.endIndex = meta.startIndex + keptCount;
   }
-
+  // state.stats.totalSplats = totalSplats;
+  state.stats.visibleSplats = totalSplats;
   return merged;
 }

@@ -11,7 +11,7 @@ export function createSelectionSphere() {
   const sphere = BABYLON.MeshBuilder.CreateSphere(
     "selectionSphere",
     { diameter: radius * 2, segments: 24 },
-    scene
+    scene,
   );
 
   // Transparent material
@@ -27,6 +27,23 @@ export function createSelectionSphere() {
   // Attach position gizmo
   const gizmo = new BABYLON.PositionGizmo(scene);
   gizmo.attachedMesh = sphere;
+
+  gizmo.onDragStartObservable.add(() => {
+    state.editorState.isInteracting = true;
+    state.editorState.interactionMode = "SELECT";
+    state.editorState.lastInteractionTime = performance.now();
+  });
+
+  gizmo.onDragObservable.add(() => {
+    // keeps interaction alive during continuous drag
+    state.editorState.lastInteractionTime = performance.now();
+  });
+
+  gizmo.onDragEndObservable.add(() => {
+    state.editorState.isInteracting = false;
+    // state.editorState.interactionMode = "IDLE";
+    state.editorState.lastInteractionTime = performance.now();
+  });
 
   state.selectionTool.mesh = sphere;
   state.selectionTool.gizmo = gizmo;

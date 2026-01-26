@@ -23,4 +23,24 @@ export const state = {
   erase: {
     erasedSplatIndices: new Set(),
   },
+  stats: {
+    totalSplats: 0, // after load / merge
+    visibleSplats: 0, // after erase / filtering
+  },
+
+  performance: {
+    samples: [],
+    avgFps: 0,
+    minFps: Infinity,
+    maxFps: 0,
+  },
+
+  editorState: {
+    isInteracting: false,
+    interactionMode: "IDLE", // IDLE | TRANSFORM | SELECT
+    lastInteractionTime: 0,
+  },
 };
+
+state.stats.totalSplats ??= 0;
+state.stats.visibleSplats ??= 0;

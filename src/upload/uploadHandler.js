@@ -32,6 +32,8 @@ export async function handleFileUpload(files) {
     const rawBytes = new Uint8Array(tempMesh.splatsData);
     const splatCount = Math.floor(rawBytes.length / 32);
 
+    state.stats.totalSplats += splatCount;
+
     // Build metadata object
     const meta = {
       id: crypto.randomUUID(), // unique ID

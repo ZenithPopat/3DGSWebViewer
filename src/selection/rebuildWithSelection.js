@@ -16,4 +16,5 @@ export function rebuildMergedMeshFromData() {
   );
 
   state.mergedMesh.updateData(state.mergedBytes.buffer);
+  // state.stats.visibleSplats = state.stats.totalSplats - erasedSplatIndices.size;
 }

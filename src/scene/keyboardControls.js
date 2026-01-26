@@ -16,6 +16,10 @@ export function setupKeyboardControls() {
     const meta = state.selectedObject;
     if (!meta) return;
 
+    state.editorState.isInteracting = true;
+    state.editorState.interactionMode = "TRANSFORM";
+    state.editorState.lastInteractionTime = performance.now();
+
     const step = 0.1;
 
     switch (event.key.toLowerCase()) {
@@ -70,5 +74,9 @@ export function setupKeyboardControls() {
         if (state.selectedObject) removeObject(state.selectedObject);
         break;
     }
+  });
+  window.addEventListener("keyup", () => {
+    state.editorState.isInteracting = false;
+    // state.editorState.interactionMode = "IDLE";
   });
 }

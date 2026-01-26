@@ -14,4 +14,8 @@ export function destroySelectionSphere() {
   }
 
   tool.enabled = false;
+
+  state.editorState.isInteracting = false;
+  // state.editorState.interactionMode = "IDLE";
+  state.editorState.lastInteractionTime = performance.now();
 }

@@ -6,7 +6,7 @@ function createSelectionMesh(scene, tool) {
     return BABYLON.MeshBuilder.CreateSphere(
       "selectionSphere",
       { diameter: tool.radius * 2, segments: 24 },
-      scene
+      scene,
     );
   }
 
@@ -18,7 +18,7 @@ function createSelectionMesh(scene, tool) {
       height: tool.boxSize.y * 2,
       depth: tool.boxSize.z * 2,
     },
-    scene
+    scene,
   );
 }
 
@@ -33,7 +33,7 @@ function applySelectionVolumeScale() {
     tool.mesh.scaling.set(
       tool.boxSize.x * 2,
       tool.boxSize.y * 2,
-      tool.boxSize.z * 2
+      tool.boxSize.z * 2,
     );
   }
 }
@@ -49,12 +49,12 @@ export function enableSelectionVolume() {
       ? BABYLON.MeshBuilder.CreateSphere(
           "selectionSphere",
           { diameter: 1 },
-          scene
+          scene,
         )
       : BABYLON.MeshBuilder.CreateBox(
           "selectionBox",
           { width: 1, height: 1, depth: 1 },
-          scene
+          scene,
         );
 
   // Material
@@ -71,6 +71,23 @@ export function enableSelectionVolume() {
   const utilLayer = new BABYLON.UtilityLayerRenderer(scene);
   const gizmo = new BABYLON.PositionGizmo(utilLayer);
   gizmo.attachedMesh = mesh;
+
+  gizmo.onDragStartObservable.add(() => {
+    state.editorState.isInteracting = true;
+    state.editorState.interactionMode = "SELECT";
+    state.editorState.lastInteractionTime = performance.now();
+  });
+
+  gizmo.onDragObservable.add(() => {
+    // keeps interaction alive during continuous drag
+    state.editorState.lastInteractionTime = performance.now();
+  });
+
+  gizmo.onDragEndObservable.add(() => {
+    state.editorState.isInteracting = false;
+    state.editorState.interactionMode = "IDLE";
+    state.editorState.lastInteractionTime = performance.now();
+  });
 
   tool.mesh = mesh;
   tool.gizmo = gizmo;
