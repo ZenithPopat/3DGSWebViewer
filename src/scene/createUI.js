@@ -19,6 +19,7 @@ import { selectObject, deselectObject } from "../splat/splatSelection.js";
 import { eraseSelectedSplats } from "../selection/eraseSelectedSplats.js";
 import { bakeAllTransforms } from "../splat/bakeTransforms.js";
 import { clearEditor } from "./clearEditor.js";
+import { rebuildMergedMeshFromData } from "../selection/rebuildWithSelection.js";
 
 import {
   createSoftDivider,
@@ -29,6 +30,7 @@ import {
   enableDragAndResize,
   createObjectRow,
   createKeyRow,
+  createSlider,
 } from "./uiBuilders.js";
 import { undoTransform, redoTransform } from "../splat/splatUndoRedo.js";
 
@@ -233,13 +235,63 @@ export function createSceneGraphUI() {
         onClick: deselectObject,
       }),
     );
+
+    objectsSection.content.appendChild(
+      createButton({
+        label: "🧹 Delete All Objects",
+        variant: "danger",
+        onClick: clearEditor,
+      }),
+    );
   }
 
-  objectsSection.content.appendChild(
+  container.appendChild(createSoftDivider());
+
+  // --- Render Section ---
+  const renderSection = createCollapsibleSection("Render Filters", "🎚️", false);
+  container.appendChild(renderSection.section);
+
+  renderSection.content.appendChild(
+    createSlider({
+      label: "Alpha Threshold",
+      min: 0,
+      max: 255,
+      step: 1,
+      value: state.renderSettings.pendingAlphaThreshold,
+      onChange: (v) => {
+        state.renderSettings.pendingAlphaThreshold = v;
+      },
+    }),
+  );
+
+  renderSection.content.appendChild(
+    createSlider({
+      label: "View Distance",
+      min: 5,
+      max: 500,
+      step: 1,
+      value: isFinite(state.renderSettings.pendingMaxViewDistance)
+        ? state.renderSettings.pendingMaxViewDistance
+        : 500,
+      onChange: (v) => {
+        state.renderSettings.pendingMaxViewDistance = v;
+      },
+    }),
+  );
+
+  renderSection.content.appendChild(
     createButton({
-      label: "🧹 Clear All",
+      label: "Apply Filters",
       variant: "danger",
-      onClick: clearEditor,
+      onClick: () => {
+        state.renderSettings.alphaThreshold =
+          state.renderSettings.pendingAlphaThreshold;
+
+        state.renderSettings.maxViewDistance =
+          state.renderSettings.pendingMaxViewDistance;
+
+        rebuildMergedMeshFromData();
+      },
     }),
   );
 

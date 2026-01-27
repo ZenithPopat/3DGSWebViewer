@@ -8,6 +8,12 @@ import {
 
 BABYLON.Logger.LogLevels = BABYLON.Logger.ErrorLogging;
 
+function formatCount(n) {
+  if (n >= 1e6) return (n / 1e6).toFixed(2) + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+  return n.toString();
+}
+
 (async () => {
   const { engine } = await createScene();
 
@@ -54,7 +60,7 @@ BABYLON.Logger.LogLevels = BABYLON.Logger.ErrorLogging;
     AVG: ${state.performance.avgFps.toFixed(1)}<br/>
     MIN: ${state.performance.minFps.toFixed(1)}<br/>
     MAX: ${state.performance.maxFps.toFixed(1)}<br/>
-    Splats: ${state.stats.visibleSplats.toLocaleString()}<br/>
+    Splats: ${formatCount(state.stats.visibleSplats)} / ${formatCount(state.stats.totalSplats)}<br/>
     Mode: ${getEffectiveInteractionMode()}
   `;
   });

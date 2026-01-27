@@ -43,16 +43,12 @@ export const state = {
   },
   renderSettings: {
     // alphaThreshold: 0.01, // default alpha cutoff
-    alphaThreshold: 10, // default alpha cutoff
-    maxViewDistance: Infinity, // or null
-    scenePruneRadius: null,
+    alphaThreshold: 20,
+    maxViewDistance: Infinity,
+    pendingAlphaThreshold: 20,
+    pendingMaxViewDistance: Infinity,
   },
   sceneStats: {
-    // center: null,
-    // maxSceneRadius: null,
     bounds: null,
   },
 };
-
-state.stats.totalSplats ??= 0;
-state.stats.visibleSplats ??= 0;

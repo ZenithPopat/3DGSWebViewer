@@ -330,3 +330,29 @@ export function createKeyRow(key, description) {
   row.appendChild(descEl);
   return row;
 }
+
+export function createSlider({ label, min, max, step, value, onChange }) {
+  const wrapper = document.createElement("div");
+
+  const l = document.createElement("div");
+  l.textContent = `${label}: ${value}`;
+  l.style.fontSize = "12px";
+  l.style.opacity = "0.8";
+
+  const input = document.createElement("input");
+  input.type = "range";
+  input.min = min;
+  input.max = max;
+  input.step = step;
+  input.value = value;
+  input.style.width = "100%";
+
+  input.oninput = (e) => {
+    const v = Number(e.target.value);
+    l.textContent = `${label}: ${v}`;
+    onChange(v);
+  };
+
+  wrapper.append(l, input);
+  return wrapper;
+}
