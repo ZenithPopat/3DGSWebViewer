@@ -49,6 +49,7 @@ export const state = {
     maxViewDistance: Infinity,
     pendingAlphaThreshold: 20,
     pendingMaxViewDistance: Infinity,
+    interactionAlphaBoost: 255,
   },
   sceneStats: {
     bounds: null,
@@ -61,5 +62,9 @@ export const state = {
       selection: false,
       shortcuts: false,
     },
+  },
+  interactionQuality: {
+    idleScaling: 1.0,
+    interactionScaling: 1.5,
   },
 };

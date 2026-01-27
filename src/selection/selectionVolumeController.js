@@ -1,5 +1,6 @@
 import * as BABYLON from "@babylonjs/core";
 import { state } from "../state/state.js";
+import { markInteraction, endInteraction } from "../utils/interactionState.js";
 
 function createSelectionMesh(scene, tool) {
   if (tool.shape === "sphere") {
@@ -72,10 +73,22 @@ export function enableSelectionVolume() {
   const gizmo = new BABYLON.PositionGizmo(utilLayer);
   gizmo.attachedMesh = mesh;
 
+  // gizmo.onDragStartObservable.add(() => {
+  //   state.editorState.isInteracting = true;
+  //   state.editorState.interactionMode = "SELECT";
+  //   state.editorState.lastInteractionTime = performance.now();
+  // });
+
   gizmo.onDragStartObservable.add(() => {
-    state.editorState.isInteracting = true;
-    state.editorState.interactionMode = "SELECT";
-    state.editorState.lastInteractionTime = performance.now();
+    markInteraction("SELECT");
+  });
+
+  gizmo.onDragObservable.add(() => {
+    markInteraction("SELECT");
+  });
+
+  gizmo.onDragEndObservable.add(() => {
+    endInteraction();
   });
 
   gizmo.onDragObservable.add(() => {

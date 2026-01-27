@@ -1,22 +1,28 @@
 import { state } from "../state/state.js";
 
-const INTERACTION_GRACE_MS = 200;
+let INTERACTION_GRACE_MS = 200;
 
 export function isEffectivelyInteracting() {
   const es = state.editorState;
+  if (!es) return false;
 
   if (es.isInteracting) return true;
-
   return performance.now() - es.lastInteractionTime < INTERACTION_GRACE_MS;
 }
 
-export function getEffectiveInteractionMode() {
+export function getInteractionMode() {
   if (!isEffectivelyInteracting()) return "IDLE";
-
-  // During grace window, preserve last non-idle mode
-  return state.editorState.interactionMode || "INTERACTING";
+  return state.editorState.interactionMode || "IDLE";
 }
 
-export function setInteractionGrace(ms) {
-  INTERACTION_GRACE_MS = ms;
+export function markInteraction(mode) {
+  state.editorState.isInteracting = true;
+  state.editorState.interactionMode = mode;
+  state.editorState.lastInteractionTime = performance.now();
+}
+
+export function endInteraction() {
+  state.editorState.isInteracting = false;
+  state.editorState.interactionMode = "IDLE";
+  state.editorState.lastInteractionTime = performance.now();
 }

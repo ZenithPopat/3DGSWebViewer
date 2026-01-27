@@ -506,6 +506,7 @@ export function createSceneGraphUI() {
         onClick: () => {
           eraseSelectedSplats();
           createSceneGraphUI();
+          disableSelectionVolume();
         },
       }),
     ]),

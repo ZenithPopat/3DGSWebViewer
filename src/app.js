@@ -3,7 +3,7 @@ import { setupKeyboardControls } from "./scene/keyboardControls.js";
 import { state } from "./state/state.js";
 import {
   isEffectivelyInteracting,
-  getEffectiveInteractionMode,
+  getInteractionMode,
 } from "./utils/interactionState.js";
 
 BABYLON.Logger.LogLevels = BABYLON.Logger.ErrorLogging;
@@ -61,7 +61,7 @@ function formatCount(n) {
     MIN: ${state.performance.minFps.toFixed(1)}<br/>
     MAX: ${state.performance.maxFps.toFixed(1)}<br/>
     Splats: ${formatCount(state.stats.visibleSplats)} / ${formatCount(state.stats.totalSplats)}<br/>
-    Mode: ${getEffectiveInteractionMode()}
+    Mode: ${getInteractionMode()}
   `;
   });
 
@@ -69,7 +69,9 @@ function formatCount(n) {
     if (!state.scene) return;
 
     const interacting = isEffectivelyInteracting();
-    const targetScaling = interacting ? INTERACTION_SCALING : IDLE_SCALING;
+    const targetScaling = interacting
+      ? state.interactionQuality.interactionScaling
+      : state.interactionQuality.idleScaling;
 
     if (targetScaling !== lastScalingLevel) {
       engine.setHardwareScalingLevel(targetScaling);
