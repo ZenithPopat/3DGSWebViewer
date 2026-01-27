@@ -6,6 +6,7 @@ export const state = {
   mergedMesh: null, // GaussianSplattingMesh
   mergeMap: [],
   selectionBox: null, // bounding box highlight mesh
+  editorGrid: null, // grid helper mesh
   selectionTool: {
     enabled: false,
     shape: "sphere", // "sphere" | "box"

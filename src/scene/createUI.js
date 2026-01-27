@@ -252,6 +252,16 @@ export function createSceneGraphUI() {
   container.appendChild(renderSection.section);
 
   renderSection.content.appendChild(
+    createButton({
+      label: "🧱 Toggle Grid",
+      onClick: () => {
+        if (!state.editorGrid) return;
+        state.editorGrid.setEnabled(!state.editorGrid.isEnabled());
+      },
+    }),
+  );
+
+  renderSection.content.appendChild(
     createSlider({
       label: "Alpha Threshold",
       min: 0,
