@@ -7,6 +7,7 @@ export const state = {
   mergeMap: [],
   selectionBox: null, // bounding box highlight mesh
   editorGrid: null, // grid helper mesh
+  eraseBackup: [],
   selectionTool: {
     enabled: false,
     shape: "sphere", // "sphere" | "box"

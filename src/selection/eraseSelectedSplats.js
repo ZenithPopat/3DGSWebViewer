@@ -11,6 +11,8 @@ export function eraseSelectedSplats() {
 
   if (!ok) return;
 
+  const backupBatch = [];
+
   // for (const meta of state.metadataList) {
   //   if (!meta.parsed) continue;
 
@@ -31,13 +33,35 @@ export function eraseSelectedSplats() {
     if (!entry) continue;
 
     const { meta, parsedIndex } = entry;
+    const splat = meta.parsed[parsedIndex];
+    if (!splat) continue;
+
+    backupBatch.push({
+      metaId: meta.id,
+      data: splat,
+    });
+  }
+
+  // 🔹 Store backup (only if something was erased)
+  if (backupBatch.length > 0) {
+    state.eraseBackup.push(backupBatch);
+  }
+
+  // 🔹 PERFORM ERASE (unchanged logic)
+  for (const mergedIndex of state.selection.splatIndices) {
+    const entry = state.mergeMap[mergedIndex];
+    if (!entry) continue;
+
+    const { meta, parsedIndex } = entry;
     meta.parsed[parsedIndex] = null;
   }
 
+  // Compact arrays
   for (const meta of state.metadataList) {
     meta.parsed = meta.parsed.filter(Boolean);
   }
 
+  // Recompute bounds
   for (const meta of state.metadataList) {
     if (meta.parsed.length > 0) {
       recomputeBoundingBoxForParsed(meta);

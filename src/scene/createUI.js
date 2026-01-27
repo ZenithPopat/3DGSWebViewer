@@ -20,6 +20,7 @@ import { eraseSelectedSplats } from "../selection/eraseSelectedSplats.js";
 import { bakeAllTransforms } from "../splat/bakeTransforms.js";
 import { clearEditor } from "./clearEditor.js";
 import { rebuildMergedMeshFromData } from "../selection/rebuildWithSelection.js";
+import { restoreLastErasedSplats } from "../selection/restoreErasedSplats.js";
 
 import {
   createSoftDivider,
@@ -491,9 +492,23 @@ export function createSceneGraphUI() {
       createButton({
         label: "🗑️ Erase",
         variant: "danger",
-        onClick: eraseSelectedSplats,
+        onClick: () => {
+          eraseSelectedSplats();
+          createSceneGraphUI();
+        },
       }),
     ]),
+  );
+
+  selectionSection.content.appendChild(
+    createButton({
+      label: "♻ Restore Last Erase",
+      onClick: () => {
+        restoreLastErasedSplats();
+        createSceneGraphUI();
+      },
+      disabled: state.eraseBackup.length === 0,
+    }),
   );
 
   container.appendChild(createSoftDivider());

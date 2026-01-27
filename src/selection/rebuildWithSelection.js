@@ -5,7 +5,7 @@ import { buildMergedBytes } from "../splat/splatMerge.js";
 export function rebuildMergedMeshFromData() {
   state.mergedBytes = buildMergedBytes(state.metadataList);
 
-  state.mergedBytes = result;
+  // state.mergedBytes = result;
 
   let total = 0;
   for (const meta of state.metadataList) {

@@ -101,5 +101,5 @@ export function applySelectionVolume() {
   }
 
   state.selection.previewHighlight = true;
-  rebuildMergedMeshFromData(); // ONE rebuild
+  rebuildMergedMeshFromData();
 }
