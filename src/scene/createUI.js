@@ -18,6 +18,7 @@ import { clearSelection } from "../selection/clearSelection.js";
 import { selectObject, deselectObject } from "../splat/splatSelection.js";
 import { eraseSelectedSplats } from "../selection/eraseSelectedSplats.js";
 import { bakeAllTransforms } from "../splat/bakeTransforms.js";
+import { clearEditor } from "./clearEditor.js";
 
 import {
   createSoftDivider,
@@ -233,6 +234,14 @@ export function createSceneGraphUI() {
       }),
     );
   }
+
+  objectsSection.content.appendChild(
+    createButton({
+      label: "🧹 Clear All",
+      variant: "danger",
+      onClick: clearEditor,
+    }),
+  );
 
   container.appendChild(createSoftDivider());
 
