@@ -1,4 +1,5 @@
 import { recenterObjectToCamera } from "../splat/recenterToCamera";
+import { state } from "../state/state.js";
 
 export function createFloatingPanel(id, title) {
   const container = document.createElement("div");
@@ -9,7 +10,7 @@ export function createFloatingPanel(id, title) {
     top: "10px",
     left: "10px",
     width: "250px",
-    // maxHeight: "85%",
+    maxHeight: "calc(100vh - 20px)",
     background: "rgba(30, 30, 30, 0.95)",
     border: "1px solid #444",
     borderRadius: "8px",
@@ -35,24 +36,42 @@ export function createFloatingPanel(id, title) {
     userSelect: "none",
   });
 
+  // Object.assign(container.style, {
+  //   maskImage: `linear-gradient(
+  //   to bottom,
+  //   transparent,
+  //   black 10px,
+  //   black calc(100% - 10px),
+  //   transparent
+  // )`,
+  //   WebkitMaskImage: `linear-gradient(
+  //   to bottom,
+  //   transparent,
+  //   black 10px,
+  //   black calc(100% - 10px),
+  //   transparent
+  // )`,
+  // });
+
   // Resize handle (bottom-right)
-  const resizeHandle = document.createElement("div");
-  Object.assign(resizeHandle.style, {
-    width: "14px",
-    height: "14px",
-    position: "absolute",
-    right: "2px",
-    bottom: "2px",
-    cursor: "nwse-resize",
-    background: "rgba(255,255,255,0.15)",
-    borderRadius: "3px",
-  });
+  // const resizeHandle = document.createElement("div");
+  // Object.assign(resizeHandle.style, {
+  //   width: "14px",
+  //   height: "14px",
+  //   position: "absolute",
+  //   right: "2px",
+  //   bottom: "2px",
+  //   cursor: "nwse-resize",
+  //   background: "rgba(255,255,255,0.15)",
+  //   borderRadius: "3px",
+  // });
 
   container.appendChild(header);
-  container.appendChild(resizeHandle);
+  // container.appendChild(resizeHandle);
 
   // ✅ RETURN resizeHandle
-  return { container, header, resizeHandle };
+  // return { container, header, resizeHandle };
+  return { container, header };
 }
 
 export function createSoftDivider(margin = "12px 0") {
@@ -80,16 +99,6 @@ export function createButton({
   };
 
   btn.textContent = label;
-  // Object.assign(btn.style, {
-  //   width: fullWidth ? "100%" : "auto",
-  //   padding: "8px",
-  //   border: "none",
-  //   borderRadius: "6px",
-  //   background: colors[variant],
-  //   color: "white",
-  //   cursor: "pointer",
-  //   margin: "4px 0",
-  // });
 
   Object.assign(btn.style, {
     width: fullWidth ? "100%" : "auto",
@@ -125,8 +134,11 @@ export function createButtonRow(buttons, gap = "6px") {
 export function createCollapsibleSection(
   title,
   icon = "",
+  sectionKey,
   initiallyOpen = true,
 ) {
+  let isOpen = state.ui?.sections?.[sectionKey] ?? initiallyOpen;
+
   const section = document.createElement("div");
 
   const header = document.createElement("div");
@@ -158,24 +170,29 @@ export function createCollapsibleSection(
   left.appendChild(label);
 
   const arrow = document.createElement("span");
-  arrow.textContent = initiallyOpen ? "▾" : "▸";
+
+  const content = document.createElement("div");
+
+  function update() {
+    content.style.display = isOpen ? "block" : "none";
+    arrow.textContent = isOpen ? "▾" : "▸";
+    state.ui.sections[sectionKey] = isOpen;
+  }
+
+  header.onclick = () => {
+    isOpen = !isOpen;
+    update();
+  };
+
+  update();
 
   header.appendChild(left);
   header.appendChild(arrow);
 
-  const content = document.createElement("div");
-  content.style.display = initiallyOpen ? "block" : "none";
-
-  header.onclick = () => {
-    const open = content.style.display !== "none";
-    content.style.display = open ? "none" : "block";
-    arrow.textContent = open ? "▸" : "▾";
-  };
-
   section.appendChild(header);
   section.appendChild(content);
 
-  return { section, content };
+  return { section, header, content };
 }
 
 export function createObjectRow(
@@ -260,7 +277,7 @@ export function createObjectRow(
   return row;
 }
 
-export function enableDragAndResize(container, header, resizeHandle) {
+export function enableDragAndResize(container, header) {
   let isDragging = false;
   let offsetX = 0;
   let offsetY = 0;
@@ -296,15 +313,15 @@ export function enableDragAndResize(container, header, resizeHandle) {
     document.body.style.userSelect = "auto";
   });
 
-  resizeHandle.addEventListener("mousedown", (e) => {
-    e.stopPropagation();
-    isResizing = true;
-    startWidth = container.offsetWidth;
-    startHeight = container.offsetHeight;
-    startX = e.clientX;
-    startY = e.clientY;
-    document.body.style.userSelect = "none";
-  });
+  // resizeHandle.addEventListener("mousedown", (e) => {
+  //   e.stopPropagation();
+  //   isResizing = true;
+  //   startWidth = container.offsetWidth;
+  //   startHeight = container.offsetHeight;
+  //   startX = e.clientX;
+  //   startY = e.clientY;
+  //   document.body.style.userSelect = "none";
+  // });
 }
 
 export function createKeyRow(key, description) {

@@ -53,4 +53,13 @@ export const state = {
   sceneStats: {
     bounds: null,
   },
+  ui: {
+    sections: {
+      importExport: true,
+      objects: true,
+      render: false,
+      selection: false,
+      shortcuts: false,
+    },
+  },
 };

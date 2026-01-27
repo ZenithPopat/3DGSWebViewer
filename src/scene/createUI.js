@@ -46,9 +46,12 @@ export function createSceneGraphUI() {
   );
 
   // --- Import / Export ---
+  const hasObjects = state.metadataList.length > 0;
+
   const importExport = createCollapsibleSection(
     "Import / Export Files",
     "📁",
+    "importExport",
     true,
   );
   container.appendChild(importExport.section);
@@ -142,19 +145,21 @@ export function createSceneGraphUI() {
   // );
 
   // Export buttons
-  importExport.content.appendChild(
-    createButtonRow([
-      createButton({
-        label: "⬇ Export All (World Space)",
-        variant: "primary",
-        onClick: () => exportMerged("splat"),
-      }),
-      createButton({
-        label: "⬇ Export Each (Local Space)",
-        onClick: () => exportIndividually("splat"),
-      }),
-    ]),
-  );
+  if (hasObjects) {
+    importExport.content.appendChild(
+      createButtonRow([
+        createButton({
+          label: "⬇ Export All (World Space)",
+          variant: "primary",
+          onClick: () => exportMerged("splat"),
+        }),
+        createButton({
+          label: "⬇ Export Each (Local Space)",
+          onClick: () => exportIndividually("splat"),
+        }),
+      ]),
+    );
+  }
 
   importExport.content.appendChild(createSoftDivider("8px 0"));
 
@@ -197,11 +202,11 @@ export function createSceneGraphUI() {
   container.appendChild(createSoftDivider());
 
   // --- Objects in Scene ---
-  const hasObjects = state.metadataList.length > 0;
 
   const objectsSection = createCollapsibleSection(
     "Objects in Scene",
     "🧩",
+    "objects",
     hasObjects,
   );
   container.appendChild(objectsSection.section);
@@ -249,7 +254,12 @@ export function createSceneGraphUI() {
   container.appendChild(createSoftDivider());
 
   // --- Render Section ---
-  const renderSection = createCollapsibleSection("Render Filters", "🎚️", false);
+  const renderSection = createCollapsibleSection(
+    "Render Filters",
+    "🎚️",
+    "render",
+    false,
+  );
   container.appendChild(renderSection.section);
 
   renderSection.content.appendChild(
@@ -312,6 +322,7 @@ export function createSceneGraphUI() {
   const selectionSection = createCollapsibleSection(
     "Selection Tool",
     "🎯",
+    "selection",
     false,
   );
   container.appendChild(selectionSection.section);
@@ -517,6 +528,7 @@ export function createSceneGraphUI() {
   const shortcutsSection = createCollapsibleSection(
     "Keyboard Shortcuts",
     "⌨️",
+    "shortcuts",
     false,
   );
   container.appendChild(shortcutsSection.section);
