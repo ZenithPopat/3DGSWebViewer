@@ -4,6 +4,7 @@ export const state = {
   onSelectionChanged: null, // callback function
   mergedBytes: null, // Uint8Array for all splats
   mergedMesh: null, // GaussianSplattingMesh
+  mergeMap: [],
   selectionBox: null, // bounding box highlight mesh
   selectionTool: {
     enabled: false,
@@ -42,7 +43,7 @@ export const state = {
   },
   renderSettings: {
     // alphaThreshold: 0.01, // default alpha cutoff
-    alphaThreshold: 0.1, // default alpha cutoff
+    alphaThreshold: 10, // default alpha cutoff
     maxViewDistance: Infinity, // or null
     scenePruneRadius: null,
   },
