@@ -38,6 +38,8 @@ import { undoTransform, redoTransform } from "../splat/splatUndoRedo.js";
 
 import { applyRenderPreset } from "../render/applyRenderPreset.js";
 
+import { switchCamera } from "../utils/cameraController.js";
+
 export function createSceneGraphUI() {
   const engine = state.scene.getEngine();
   // Remove old UI
@@ -301,6 +303,21 @@ export function createSceneGraphUI() {
   );
 
   renderSection.content.appendChild(createSubHeading("Custom Settings"));
+
+  renderSection.content.appendChild(
+    createButton({
+      label:
+        state.camera.mode === "orbit"
+          ? "🛫 Switch to Fly Mode"
+          : "🛰 Switch to Orbit Mode",
+      onClick: () => {
+        const nextMode = state.camera.mode === "orbit" ? "fly" : "orbit";
+
+        switchCamera(nextMode);
+        createSceneGraphUI();
+      },
+    }),
+  );
 
   renderSection.content.appendChild(
     createButton({

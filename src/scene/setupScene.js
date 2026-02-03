@@ -37,17 +37,70 @@ export async function createScene() {
 
   state.editorGrid = ground;
 
-  const camera = new BABYLON.ArcRotateCamera(
-    "cam",
-    0,
-    0,
+  // const camera = new BABYLON.ArcRotateCamera(
+  //   "cam",
+  //   0,
+  //   0,
+  //   10,
+  //   new BABYLON.Vector3(0, 0, 0),
+  //   scene,
+  // );
+  // // camera.attachControl();
+  // camera.attachControl(true);
+  // scene.activeCamera = camera;
+
+  const orbitCam = new BABYLON.ArcRotateCamera(
+    "orbitCam",
+    Math.PI / 2,
+    Math.PI / 3,
     10,
-    new BABYLON.Vector3(0, 0, 0),
+    BABYLON.Vector3.Zero(),
     scene,
   );
-  // camera.attachControl();
-  camera.attachControl(true);
-  scene.activeCamera = camera;
+
+  // Prevent inversion
+  orbitCam.lowerRadiusLimit = 1.0;
+  orbitCam.lowerBetaLimit = 0.01;
+  orbitCam.upperBetaLimit = Math.PI * 0.99;
+  orbitCam.attachControl(canvas, true);
+
+  const flyCam = new BABYLON.UniversalCamera(
+    "flyCam",
+    new BABYLON.Vector3(0, 0, -10),
+    scene,
+  );
+
+  flyCam.speed = 0.3;
+  flyCam.angularSensibility = 3000;
+  flyCam.detachControl(); // start disabled
+
+  flyCam.speed = 0.5;
+  flyCam.angularSensibility = 4000;
+  flyCam.inertia = 0.7;
+  flyCam.minZ = 0.01;
+
+  flyCam.keysUpward = [33]; // PageUp
+  flyCam.keysDownward = [34]; // PageDown
+
+  scene.onKeyboardObservable.add((kbInfo) => {
+    if (state.camera.mode !== "fly") return;
+
+    if (kbInfo.type === BABYLON.KeyboardEventTypes.KEYDOWN) {
+      if (kbInfo.event.key === "Shift") {
+        flyCam.speed = 1.5;
+      }
+    }
+
+    if (kbInfo.type === BABYLON.KeyboardEventTypes.KEYUP) {
+      if (kbInfo.event.key === "Shift") {
+        flyCam.speed = 0.5;
+      }
+    }
+  });
+
+  state.cameras.orbit = orbitCam;
+  state.cameras.fly = flyCam;
+  scene.activeCamera = orbitCam;
 
   new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1, -2, 1), scene);
 

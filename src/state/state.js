@@ -76,6 +76,8 @@ export const state = {
       showGrid: true,
       showBoundingBoxes: true,
       showSelectionHelper: true,
+      alphaThreshold: 10,
+      maxViewDistance: Infinity,
     },
 
     normal: {
@@ -83,6 +85,8 @@ export const state = {
       showGrid: false,
       showBoundingBoxes: true,
       showSelectionHelper: true,
+      alphaThreshold: 20,
+      maxViewDistance: 500,
     },
 
     performance: {
@@ -90,6 +94,8 @@ export const state = {
       showGrid: false,
       showBoundingBoxes: false,
       showSelectionHelper: false,
+      alphaThreshold: 40,
+      maxViewDistance: 250,
     },
   },
   adaptiveScaling: {
@@ -99,5 +105,12 @@ export const state = {
     targetFPS: 30,
     smoothing: 0.1,
     currentScale: 1.0,
+  },
+  camera: {
+    mode: "orbit", // "orbit" | "fly"
+  },
+  cameras: {
+    orbit: null,
+    fly: null,
   },
 };
