@@ -32,10 +32,14 @@ import {
   createObjectRow,
   createKeyRow,
   createSlider,
+  createSubHeading,
 } from "./uiBuilders.js";
 import { undoTransform, redoTransform } from "../splat/splatUndoRedo.js";
 
+import { applyRenderPreset } from "../render/applyRenderPreset.js";
+
 export function createSceneGraphUI() {
+  const engine = state.scene.getEngine();
   // Remove old UI
   const old = document.getElementById("sceneGraph");
   if (old) old.remove();
@@ -262,12 +266,49 @@ export function createSceneGraphUI() {
   );
   container.appendChild(renderSection.section);
 
+  renderSection.content.appendChild(createSubHeading("Presets"));
+
+  renderSection.content.appendChild(
+    createButtonRow([
+      createButton({
+        label: "🎨 Quality",
+        active: state.renderPreset === "pro",
+        tooltip: "Maximum visual quality with higher GPU cost",
+        onClick: () => {
+          applyRenderPreset("pro", engine);
+          createSceneGraphUI();
+        },
+      }),
+      createButton({
+        label: "⚖ Balanced",
+        active: state.renderPreset === "normal",
+        tooltip: "Balanced trade-off between quality and performance",
+        onClick: () => {
+          applyRenderPreset("normal", engine);
+          createSceneGraphUI();
+        },
+      }),
+      createButton({
+        label: "🚀 Performance",
+        active: state.renderPreset === "performance",
+        tooltip: "Optimized for smooth interaction and maximum FPS",
+        onClick: () => {
+          applyRenderPreset("performance", engine);
+          createSceneGraphUI();
+        },
+      }),
+    ]),
+  );
+
+  renderSection.content.appendChild(createSubHeading("Custom Settings"));
+
   renderSection.content.appendChild(
     createButton({
       label: "🧱 Toggle Grid",
       onClick: () => {
         if (!state.editorGrid) return;
         state.editorGrid.setEnabled(!state.editorGrid.isEnabled());
+        state.renderPreset = null;
       },
     }),
   );
@@ -281,6 +322,7 @@ export function createSceneGraphUI() {
       value: state.renderSettings.pendingAlphaThreshold,
       onChange: (v) => {
         state.renderSettings.pendingAlphaThreshold = v;
+        state.renderPreset = null;
       },
     }),
   );
@@ -296,6 +338,7 @@ export function createSceneGraphUI() {
         : 500,
       onChange: (v) => {
         state.renderSettings.pendingMaxViewDistance = v;
+        state.renderPreset = null;
       },
     }),
   );
@@ -312,6 +355,7 @@ export function createSceneGraphUI() {
           state.renderSettings.pendingMaxViewDistance;
 
         rebuildMergedMeshFromData();
+        createSceneGraphUI();
       },
     }),
   );

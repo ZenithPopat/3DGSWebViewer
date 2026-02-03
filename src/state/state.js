@@ -67,4 +67,28 @@ export const state = {
     idleScaling: 1.0,
     interactionScaling: 1.5,
   },
+  renderPreset: "normal", // "pro" | "normal" | "performance"
+
+  presets: {
+    pro: {
+      hardwareScaling: 1.0,
+      showGrid: true,
+      showBoundingBoxes: true,
+      showSelectionHelper: true,
+    },
+
+    normal: {
+      hardwareScaling: 1.0,
+      showGrid: false,
+      showBoundingBoxes: true,
+      showSelectionHelper: true,
+    },
+
+    performance: {
+      hardwareScaling: 1.5,
+      showGrid: false,
+      showBoundingBoxes: false,
+      showSelectionHelper: false,
+    },
+  },
 };

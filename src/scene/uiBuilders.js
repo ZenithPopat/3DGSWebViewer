@@ -89,6 +89,8 @@ export function createButton({
   variant = "default",
   fullWidth = true,
   disabled = false,
+  active = false,
+  tooltip = "",
 }) {
   const btn = document.createElement("button");
 
@@ -98,14 +100,22 @@ export function createButton({
     danger: "#555",
   };
 
+  const activeColor = "#2d8dff";
+
   btn.textContent = label;
+  btn.title = tooltip;
+  btn.style.position = "relative";
 
   Object.assign(btn.style, {
     width: fullWidth ? "100%" : "auto",
     padding: "8px",
     border: "none",
     borderRadius: "6px",
-    background: disabled ? "rgba(255,255,255,0.12)" : colors[variant],
+    background: disabled
+      ? "rgba(255,255,255,0.12)"
+      : active
+        ? activeColor
+        : colors[variant],
     color: disabled ? "rgba(255,255,255,0.5)" : "white",
     cursor: disabled ? "not-allowed" : "pointer",
     margin: "4px 0",
@@ -116,6 +126,18 @@ export function createButton({
   btn.disabled = disabled;
   if (!disabled) btn.onclick = onClick;
   return btn;
+}
+
+export function createSubHeading(text) {
+  const h = document.createElement("div");
+  h.textContent = text;
+  h.style.margin = "8px 0 4px";
+  h.style.fontSize = "11px";
+  h.style.fontWeight = "600";
+  h.style.opacity = "0.7";
+  h.style.textTransform = "uppercase";
+  h.style.textAlign = "center";
+  return h;
 }
 
 export function createButtonRow(buttons, gap = "6px") {
