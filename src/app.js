@@ -5,6 +5,7 @@ import {
   isEffectivelyInteracting,
   getInteractionMode,
 } from "./utils/interactionState.js";
+import { updateAdaptiveScaling } from "./utils/adaptiveScaling.js";
 
 BABYLON.Logger.LogLevels = BABYLON.Logger.ErrorLogging;
 
@@ -34,6 +35,9 @@ function formatCount(n) {
   fpsDiv.style.zIndex = 9999;
   fpsDiv.style.pointerEvents = "none";
   document.body.appendChild(fpsDiv);
+
+  const fps = engine.getFps();
+  updateAdaptiveScaling(engine, fps);
 
   setInterval(() => {
     if (!state.scene) return;

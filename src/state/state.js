@@ -91,4 +91,12 @@ export const state = {
       showSelectionHelper: false,
     },
   },
+  adaptiveScaling: {
+    enabled: true,
+    minScale: 1.0, // best quality
+    maxScale: 2.0, // worst quality
+    targetFPS: 30,
+    smoothing: 0.1, // lerp factor
+    currentScale: 1.0,
+  },
 };
