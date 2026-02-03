@@ -532,6 +532,24 @@ export function createSceneGraphUI() {
   restrictWrapper.append(restrictCheckbox, restrictText);
   selectionSection.content.appendChild(restrictWrapper);
 
+  const invertWrapper = document.createElement("label");
+  invertWrapper.style.display = "flex";
+  invertWrapper.style.gap = "6px";
+  invertWrapper.style.marginTop = "6px";
+
+  const invertCheckbox = document.createElement("input");
+  invertCheckbox.type = "checkbox";
+  invertCheckbox.checked = state.selection.invert;
+  invertCheckbox.onchange = () => {
+    state.selection.invert = invertCheckbox.checked;
+  };
+
+  const invertText = document.createElement("span");
+  invertText.textContent = "Invert selection (outside volume)";
+
+  invertWrapper.append(invertCheckbox, invertText);
+  selectionSection.content.appendChild(invertWrapper);
+
   // Action buttons
   selectionSection.content.appendChild(
     createButtonRow([

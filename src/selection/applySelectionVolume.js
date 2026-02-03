@@ -5,6 +5,7 @@ import { rebuildMergedMeshFromData } from "./rebuildWithSelection.js";
 export function applySelectionVolume() {
   const tool = state.selectionTool;
   const mesh = tool.mesh;
+  const invert = state.selection.invert;
 
   if (!mesh || !state.mergedMesh) return;
 
@@ -95,7 +96,7 @@ export function applySelectionVolume() {
         Math.abs(localPos.z) <= 0.5;
     }
 
-    if (inside) {
+    if (invert ? !inside : inside) {
       state.selection.splatIndices.add(mergedIndex);
     }
   }

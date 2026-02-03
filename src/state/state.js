@@ -22,6 +22,7 @@ export const state = {
     objectId: null, // future: restrict to one object
     previewHighlight: false,
     restrictToSelectedObject: false,
+    invert: false,
   },
   erase: {
     erasedSplatIndices: new Set(),
@@ -93,10 +94,10 @@ export const state = {
   },
   adaptiveScaling: {
     enabled: true,
-    minScale: 1.0, // best quality
-    maxScale: 2.0, // worst quality
+    minScale: 1.0,
+    maxScale: 2.0,
     targetFPS: 30,
-    smoothing: 0.1, // lerp factor
+    smoothing: 0.1,
     currentScale: 1.0,
   },
 };
