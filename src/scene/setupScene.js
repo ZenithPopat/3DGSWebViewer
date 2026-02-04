@@ -6,8 +6,6 @@ import "@babylonjs/core/Debug/debugLayer.js";
 import "@babylonjs/inspector/dist/babylon.inspector.bundle.js";
 import { state } from "../state/state.js";
 import { createSceneGraphUI } from "./createUI.js";
-import { markInteraction, endInteraction } from "../utils/interactionState.js";
-// import { enableObjectPicking } from "./objectPicking.js";
 
 export async function createScene() {
   const canvas = document.getElementById("renderCanvas");
