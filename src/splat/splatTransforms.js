@@ -1,5 +1,4 @@
 import { state } from "../state/state.js";
-// import { commitMetaToMergedBytes } from "./splatMerge.js";
 import { recomputeBoundingBoxForParsed } from "./splatBounds.js";
 import {
   quatMultiply,
@@ -17,7 +16,7 @@ function safeUpdateMesh() {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      state.scene
+      state.scene,
     );
     state.mergedMesh.updateData(state.mergedBytes.buffer);
   }

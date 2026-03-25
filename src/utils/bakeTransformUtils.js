@@ -13,7 +13,7 @@ export function bakeTranslateParsed(meta, dx, dy, dz) {
 }
 
 export function bakeRotateParsedQuat(meta, rotationQuat) {
-  // 1️⃣ Compute centroid (pivot)
+  // Compute centroid (pivot)
   let cx = 0,
     cy = 0,
     cz = 0;
@@ -26,13 +26,13 @@ export function bakeRotateParsedQuat(meta, rotationQuat) {
   cy /= meta.splatCount;
   cz /= meta.splatCount;
 
-  // 2️⃣ Build rotation matrix ONCE
+  // Build rotation matrix ONCE
   const rotMat = new BABYLON.Matrix();
   rotationQuat.toRotationMatrix(rotMat);
 
-  // 3️⃣ Rotate positions + orientations
+  // Rotate positions and orientations
   for (const s of meta.parsed) {
-    // --- rotate position around centroid ---
+    // Rotate position around centroid
     const localPos = new BABYLON.Vector3(s.px - cx, s.py - cy, s.pz - cz);
 
     const rotated = BABYLON.Vector3.TransformCoordinates(localPos, rotMat);
@@ -41,7 +41,7 @@ export function bakeRotateParsedQuat(meta, rotationQuat) {
     s.py = cy + rotated.y;
     s.pz = cz + rotated.z;
 
-    // --- rotate splat orientation ---
+    // Rotate splat orientation
     const sq = new BABYLON.Quaternion(s.q1, s.q2, s.q3, s.q0);
     const out = rotationQuat.multiply(sq).normalize();
 

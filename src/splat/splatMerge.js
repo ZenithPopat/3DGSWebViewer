@@ -9,9 +9,7 @@ export function buildMergedBytes(metadataList) {
   const cam = state.scene?.activeCamera;
   const camPos = cam?.position;
 
-  // ==================================================
-  // PASS 1 — COUNT visible splats (ALL filters applied)
-  // ==================================================
+  // COUNT visible splats after filtering to allocate exact buffer size
   let visibleSplats = 0;
 
   for (const meta of metadataList) {
@@ -22,7 +20,7 @@ export function buildMergedBytes(metadataList) {
       const alpha = s.a ?? 1.0;
       if (alpha < alphaThreshold) continue;
 
-      // ---- Bounding-box pruning (scene outliers) ----
+      // Bounding-box pruning
       if (bounds) {
         if (
           s.px < bounds.min.x ||
@@ -36,7 +34,7 @@ export function buildMergedBytes(metadataList) {
         }
       }
 
-      // ---- View-distance culling (optional) ----
+      // View-distance culling
       if (camPos && isFinite(maxViewDistance)) {
         const dx = s.px - camPos.x;
         const dy = s.py - camPos.y;
@@ -53,12 +51,10 @@ export function buildMergedBytes(metadataList) {
   // Allocate exact-sized GPU buffer
   const merged = new Uint8Array(visibleSplats * SPLAT_RECORD_BYTES);
 
-  // mergedIndex → { meta, parsedIndex }
   state.mergeMap = [];
 
-  // ==================================================
-  // PASS 2 — PACK splats + build mergeMap
-  // ==================================================
+  // PACK splats and build mergeMap
+
   let writeIndex = 0;
 
   for (const meta of metadataList) {
@@ -69,11 +65,11 @@ export function buildMergedBytes(metadataList) {
     for (let i = 0; i < meta.parsed.length; i++) {
       const s = meta.parsed[i];
 
-      // ---- Alpha filtering ----
+      // Alpha filtering
       const alpha = s.a ?? 1.0;
       if (alpha < alphaThreshold) continue;
 
-      // ---- Bounding-box pruning ----
+      // Bounding-box pruning
       if (bounds) {
         if (
           s.px < bounds.min.x ||
@@ -90,7 +86,7 @@ export function buildMergedBytes(metadataList) {
       if (s.scale !== undefined && s.scale < 0.01) continue;
       if (s.sigma !== undefined && s.sigma < threshold) continue;
 
-      // ---- View-distance culling ----
+      // View-distance culling
       if (camPos && isFinite(maxViewDistance)) {
         const dx = s.px - camPos.x;
         const dy = s.py - camPos.y;
@@ -103,7 +99,7 @@ export function buildMergedBytes(metadataList) {
       // Copy splat so color edits are safe
       const tmp = { ...s };
 
-      // ---- Selection preview highlight ----
+      // Selection preview highlight
       if (
         state.selection.previewHighlight &&
         state.selection.splatIndices.has(writeIndex)
@@ -115,7 +111,7 @@ export function buildMergedBytes(metadataList) {
 
       packSplatRecord(merged, writeIndex, tmp);
 
-      // ---- Mapping for destructive erase ----
+      // Mapping for destructive erase
       state.mergeMap[writeIndex] = {
         meta,
         parsedIndex: i,
@@ -125,7 +121,6 @@ export function buildMergedBytes(metadataList) {
       keptCount++;
     }
 
-    // Informational only — never use for logic
     meta.splatCount = keptCount;
   }
 

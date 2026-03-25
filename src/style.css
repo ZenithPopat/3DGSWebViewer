@@ -10,5 +10,5 @@ body {
 #renderCanvas {
   width: 100%;
   height: 100%;
-  touch-action: none; /* Prevents touch events from being handled by the browser */
+  touch-action: none;
 }

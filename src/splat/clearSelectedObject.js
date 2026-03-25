@@ -8,7 +8,4 @@ export function deselectObject() {
     state.selectionBox.dispose();
     state.selectionBox = null;
   }
-
-  // Update visuals (remove object highlight)
-  // rebuildMergedMeshWithSelection();
 }

@@ -1,9 +1,4 @@
 import { state } from "../state/state.js";
-// import {
-//   translateObject,
-//   scaleObjectPerSplat,
-//   rotateObjectPerSplat,
-// } from "../splat/splatTransforms.js";
 import {
   moveObject,
   rotateObject,

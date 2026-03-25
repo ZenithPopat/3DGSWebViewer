@@ -1,7 +1,6 @@
 import * as BABYLON from "@babylonjs/core";
 import { state } from "../state/state.js";
 import { refreshSelectionBox } from "./updateSelectionBox.js";
-// import { rebuildMergedMeshWithSelection } from "../selection/rebuildWithSelection.js";
 
 export function selectObject(meta, scene) {
   state.selectedObject = meta;
@@ -15,16 +14,6 @@ export function selectObject(meta, scene) {
   const { min, max } = meta.boundingBox;
   const size = max.subtract(min);
   const center = min.add(size.scale(0.5));
-
-  // state.selectionBox = BABYLON.MeshBuilder.CreateBox(
-  //   "selBox",
-  //   {
-  //     width: size.x,
-  //     height: size.y,
-  //     depth: size.z,
-  //   },
-  //   scene,
-  // );
 
   state.selectionBox = BABYLON.MeshBuilder.CreateBox(
     "selBox",

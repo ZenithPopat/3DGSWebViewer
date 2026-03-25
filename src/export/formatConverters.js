@@ -61,9 +61,6 @@ export function convertParsedToSplat(parsed) {
   return buf;
 }
 
-/* ---------------------------------------------
-   parsed[] → .ply (ASCII)
---------------------------------------------- */
 export function convertParsedToPLY(parsed) {
   let header = `ply
 format ascii 1.0

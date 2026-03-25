@@ -72,13 +72,6 @@ export function enableSelectionVolume() {
   const utilLayer = new BABYLON.UtilityLayerRenderer(scene);
   const gizmo = new BABYLON.PositionGizmo(utilLayer);
   gizmo.attachedMesh = mesh;
-
-  // gizmo.onDragStartObservable.add(() => {
-  //   state.editorState.isInteracting = true;
-  //   state.editorState.interactionMode = "SELECT";
-  //   state.editorState.lastInteractionTime = performance.now();
-  // });
-
   gizmo.onDragStartObservable.add(() => {
     markInteraction("SELECT");
   });
@@ -92,7 +85,6 @@ export function enableSelectionVolume() {
   });
 
   gizmo.onDragObservable.add(() => {
-    // keeps interaction alive during continuous drag
     state.editorState.lastInteractionTime = performance.now();
   });
 

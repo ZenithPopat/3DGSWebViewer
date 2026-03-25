@@ -5,7 +5,7 @@ export function showSelectionBoundingBox(meta) {
   const scene = state.scene;
   if (!scene || !meta.boundingBox) return;
 
-  // Remove old box if any
+  // Remove old box, if any
   hideSelectionBoundingBox();
 
   const { min, max } = meta.boundingBox;

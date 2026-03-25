@@ -10,7 +10,7 @@ export const state = {
   eraseBackup: [],
   selectionTool: {
     enabled: false,
-    shape: "sphere", // "sphere" | "box"
+    shape: "sphere", // "sphere" or "box"
     mesh: null,
     gizmo: null,
     radius: 0.5,
@@ -41,7 +41,7 @@ export const state = {
 
   editorState: {
     isInteracting: false,
-    interactionMode: "IDLE", // IDLE | TRANSFORM | SELECT
+    interactionMode: "IDLE", // IDLE / TRANSFORM / SELECT
     lastInteractionTime: 0,
   },
   renderSettings: {
@@ -68,7 +68,7 @@ export const state = {
     idleScaling: 1.0,
     interactionScaling: 1.5,
   },
-  renderPreset: "normal", // "pro" | "normal" | "performance"
+  renderPreset: "normal", // "pro" / "normal" / "performance"
 
   presets: {
     pro: {
@@ -107,7 +107,7 @@ export const state = {
     currentScale: 1.0,
   },
   camera: {
-    mode: "orbit", // "orbit" | "fly"
+    mode: "orbit", // "orbit" / "fly"
   },
   cameras: {
     orbit: null,

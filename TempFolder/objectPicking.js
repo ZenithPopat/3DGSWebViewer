@@ -1,5 +1,5 @@
 import * as BABYLON from "@babylonjs/core";
-import { state } from "../state/state.js";
+import { state } from "../src/state/state.js";
 
 function rayIntersectsAABB(ray, min, max) {
   let tmin = (min.x - ray.origin.x) / ray.direction.x;

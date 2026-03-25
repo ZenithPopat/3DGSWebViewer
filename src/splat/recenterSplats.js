@@ -8,7 +8,7 @@ export function recenterParsedSplats(parsedSplats) {
     maxY = -Infinity,
     maxZ = -Infinity;
 
-  // 1️⃣ Compute bounds using px/py/pz
+  // Compute bounds
   for (const s of parsedSplats) {
     const x = s.px;
     const y = s.py;
@@ -27,7 +27,7 @@ export function recenterParsedSplats(parsedSplats) {
   const cy = (minY + maxY) * 0.5;
   const cz = (minZ + maxZ) * 0.5;
 
-  // 2️⃣ Shift splats so center becomes origin
+  // Shift splats so center becomes origin
   for (const s of parsedSplats) {
     s.px -= cx;
     s.py -= cy;

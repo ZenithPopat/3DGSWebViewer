@@ -35,13 +35,11 @@ export function createSelectionSphere() {
   });
 
   gizmo.onDragObservable.add(() => {
-    // keeps interaction alive during continuous drag
     state.editorState.lastInteractionTime = performance.now();
   });
 
   gizmo.onDragEndObservable.add(() => {
     state.editorState.isInteracting = false;
-    // state.editorState.interactionMode = "IDLE";
     state.editorState.lastInteractionTime = performance.now();
   });
 

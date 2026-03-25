@@ -21,7 +21,7 @@ export async function handleFileUpload(files) {
       true,
     );
 
-    // SAFELY WAIT for the mesh to load in ANY Babylon version
+    // Wait for the mesh to load in ANY Babylon version
     await waitForGaussianMeshReady(tempMesh);
 
     if (!tempMesh.splatsData) {
@@ -35,7 +35,6 @@ export async function handleFileUpload(files) {
 
     state.stats.totalSplats += splatCount;
 
-    // Build metadata object
     const meta = {
       id: crypto.randomUUID(), // unique ID
       fileName: file.name,
@@ -85,7 +84,7 @@ export async function handleFileUpload(files) {
     try {
       state.mergedMesh.updateData(state.mergedBytes.buffer);
     } catch (err) {
-      console.error("❌ mergedMesh.updateData failed → recreating mesh:", err);
+      console.error("mergedMesh.updateData failed → recreating mesh:", err);
       state.mergedMesh.dispose();
       state.mergedMesh = new BABYLON.GaussianSplattingMesh(
         "merged",

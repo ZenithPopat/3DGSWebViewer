@@ -35,18 +35,6 @@ export async function createScene() {
 
   state.editorGrid = ground;
 
-  // const camera = new BABYLON.ArcRotateCamera(
-  //   "cam",
-  //   0,
-  //   0,
-  //   10,
-  //   new BABYLON.Vector3(0, 0, 0),
-  //   scene,
-  // );
-  // // camera.attachControl();
-  // camera.attachControl(true);
-  // scene.activeCamera = camera;
-
   const orbitCam = new BABYLON.ArcRotateCamera(
     "orbitCam",
     Math.PI / 2,
@@ -102,30 +90,7 @@ export async function createScene() {
 
   new BABYLON.DirectionalLight("light", new BABYLON.Vector3(-1, -2, 1), scene);
 
-  // scene.onPointerObservable.add((pointerInfo) => {
-  //   if (pointerInfo.type !== BABYLON.PointerEventTypes.POINTERDOWN) return;
-
-  //   // Click on empty space → deselect
-  //   const pick = scene.pick(scene.pointerX, scene.pointerY);
-
-  //   if (!pick.hit) {
-  //     // IMPORTANT: only deselect, do NOT select anything
-  //     if (state.selectedObject) {
-  //       state.selectedObject = null;
-
-  //       if (state.selectionBox) {
-  //         state.selectionBox.dispose();
-  //         state.selectionBox = null;
-  //       }
-
-  //       state.onSelectionChanged?.(null);
-  //     }
-  //   }
-  // });
-
   createSceneGraphUI();
-
-  // scene.debugLayer.show();
 
   return { scene, engine };
 }

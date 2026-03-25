@@ -8,7 +8,6 @@ export function moveObject(meta, dx, dy, dz) {
   meta.hasUnbakedTransform = true;
   createSceneGraphUI();
   meta.localTransform.position.addInPlaceFromFloats(dx, dy, dz);
-  // applyLocalTransform(meta);
   refreshSelectionBox(meta);
 }
 
@@ -17,7 +16,6 @@ export function scaleObject(meta, factor) {
   meta.hasUnbakedTransform = true;
   createSceneGraphUI();
   meta.localTransform.scale.scaleInPlace(factor);
-  // applyLocalTransform(meta);
   refreshSelectionBox(meta);
 }
 
@@ -33,6 +31,5 @@ export function rotateObject(meta, axis, angleDeg) {
     .multiply(meta.localTransform.rotation)
     .normalize();
 
-  // applyLocalTransform(meta);
   refreshSelectionBox(meta);
 }

@@ -12,10 +12,10 @@ export function removeObject(meta) {
 
   if (!ok) return;
 
-  // 1. Remove from metadata list
+  // Remove from metadata list
   state.metadataList = state.metadataList.filter((m) => m.id !== meta.id);
 
-  // 2. Clear selection if needed
+  // Clear selection if needed
   if (state.selectedObject?.id === meta.id) {
     state.selectedObject = null;
 
@@ -25,10 +25,10 @@ export function removeObject(meta) {
     }
   }
 
-  // 3. Rebuild merged splats from remaining objects
+  // Rebuild merged splats from remaining objects
   state.mergedBytes = buildMergedBytes(state.metadataList);
 
-  // 4. Rebuild merged mesh
+  // Rebuild merged mesh
   if (state.mergedMesh) {
     state.mergedMesh.dispose();
   }
@@ -42,7 +42,7 @@ export function removeObject(meta) {
   try {
     state.mergedMesh.updateData(state.mergedBytes.buffer);
   } catch (err) {
-    console.error("❌ mergedMesh.updateData failed while removing:", err);
+    console.error("mergedMesh.updateData failed while removing:", err);
     state.mergedMesh.dispose();
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
@@ -55,6 +55,6 @@ export function removeObject(meta) {
   state.mergedMesh.computeWorldMatrix(true);
   state.mergedMesh.refreshBoundingInfo();
 
-  // 5. Refresh UI
+  // Refresh UI
   createSceneGraphUI();
 }

@@ -12,7 +12,7 @@ export function switchCamera(mode) {
   const canvas = scene.getEngine().getRenderingCanvas();
   const active = scene.activeCamera;
 
-  // ----------- SWITCH TO FLY -----------
+  // Swtich to fly mode
   if (mode === "fly" && state.camera.mode !== "fly") {
     flyCam.position.copyFrom(active.position);
 
@@ -27,7 +27,7 @@ export function switchCamera(mode) {
     return;
   }
 
-  // ----------- SWITCH TO ORBIT ----------
+  // Switch to orbit mode
   if (mode === "orbit" && state.camera.mode !== "orbit") {
     orbitCam.setPosition(active.position.clone());
 

@@ -6,7 +6,7 @@ import { createSceneGraphUI } from "../scene/createUI.js";
 export function toggleVisibility(meta) {
   const scene = state.scene;
 
-  // Flip flag
+  // Invert flag
   meta.visible = !meta.visible;
 
   // Rebuild merged bytes using only visible objects
@@ -20,7 +20,7 @@ export function toggleVisibility(meta) {
   state.mergedMesh = new BABYLON.GaussianSplattingMesh(
     "merged",
     undefined,
-    scene
+    scene,
   );
 
   try {
@@ -31,7 +31,7 @@ export function toggleVisibility(meta) {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      scene
+      scene,
     );
     state.mergedMesh.updateData(state.mergedBytes.buffer);
   }
@@ -48,6 +48,6 @@ export function toggleVisibility(meta) {
     state.selectedObject = null;
   }
 
-  // Refresh UI so button shows correct eye icon
+  // Refresh UI
   createSceneGraphUI();
 }

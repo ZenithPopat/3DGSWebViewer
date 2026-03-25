@@ -1,4 +1,3 @@
-// splat/recenterToCamera.js
 import * as BABYLON from "@babylonjs/core";
 import { state } from "../state/state.js";
 import { recenterParsedSplats } from "./recenterSplats.js";
@@ -10,8 +9,6 @@ import { refreshSelectionBox } from "./updateSelectionBox.js";
 export function recenterObjectToCamera(meta) {
   const camera = state.scene?.activeCamera;
   if (!meta || !camera) return;
-
-  const oldCenter = recenterParsedSplats(meta.parsed);
 
   const target =
     camera.getTarget?.() ?? camera.target ?? BABYLON.Vector3.Zero();

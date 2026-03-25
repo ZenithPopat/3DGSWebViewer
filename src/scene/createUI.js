@@ -126,30 +126,6 @@ export function createSceneGraphUI() {
     }),
   );
 
-  // importExport.content.appendChild(
-  //   createButton({
-  //     label: "↶ Undo Transform",
-  //     variant: "primary",
-  //     disabled: !canUndo,
-  //     onClick: () => {
-  //       undoTransform();
-  //       createSceneGraphUI();
-  //     },
-  //   }),
-  // );
-
-  // importExport.content.appendChild(
-  //   createButton({
-  //     label: "↷ Redo Transform",
-  //     variant: "primary",
-  //     disabled: !canRedo,
-  //     onClick: () => {
-  //       redoTransform();
-  //       createSceneGraphUI();
-  //     },
-  //   }),
-  // );
-
   // Export buttons
   if (hasObjects) {
     importExport.content.appendChild(
@@ -177,19 +153,6 @@ export function createSceneGraphUI() {
   convertHint.style.margin = "4px 0 6px";
 
   importExport.content.appendChild(convertHint);
-
-  // importExport.content.appendChild(
-  //   createButton({
-  //     label: "🔁 Convert .PLY → .SPLAT (Online)",
-  //     onClick: () => {
-  //       window.open(
-  //         "https://YOUR-CONVERTER-URL-HERE",
-  //         "_blank",
-  //         "noopener,noreferrer"
-  //       );
-  //     },
-  //   })
-  // );
 
   const convertBtn = createButton({
     label: "🔁 Convert .PLY → .SPLAT (Online)",
@@ -388,21 +351,6 @@ export function createSceneGraphUI() {
   );
   container.appendChild(selectionSection.section);
 
-  // Toggle selection volume
-  // const selectionBtn = createButton({
-  //   label: "🟦 Toggle Splat Selection Sphere",
-  //   onClick: () => {
-  //     if (isSelectionVolumeEnabled()) {
-  //       disableSelectionVolume();
-  //       selectionBtn.style.background = "#444";
-  //     } else {
-  //       enableSelectionVolume();
-  //       selectionBtn.style.background = "#2d8dff";
-  //     }
-  //   },
-  // });
-  // selectionSection.content.appendChild(selectionBtn);
-
   const selectionBtn = createButton({
     label: "🎯 Enable Selection Tool",
     onClick: () => {
@@ -427,7 +375,6 @@ export function createSceneGraphUI() {
   shapeLabel.style.margin = "6px 0 2px";
 
   selectionSection.content.appendChild(shapeLabel);
-  // selectionSection.content.appendChild(shapeSelect);
 
   const shapeSelect = document.createElement("select");
 
@@ -472,26 +419,6 @@ export function createSceneGraphUI() {
   };
 
   selectionSection.content.appendChild(shapeSelect);
-
-  // const shapeSelect = document.createElement("select");
-  // shapeSelect.style.width = "100%";
-  // shapeSelect.style.marginBottom = "6px";
-
-  // ["sphere", "box"].forEach((s) => {
-  //   const opt = document.createElement("option");
-  //   opt.value = s;
-  //   opt.textContent = s === "sphere" ? "Sphere Selection" : "Box Selection";
-  //   shapeSelect.appendChild(opt);
-  // });
-
-  // shapeSelect.value = state.selectionTool.shape;
-
-  // shapeSelect.onchange = (e) => {
-  //   setSelectionShape(e.target.value);
-  //   syncSelectionSizeSlider();
-  // };
-
-  // selectionSection.content.appendChild(shapeSelect);
 
   // Radius label
   const radiusLabel = document.createElement("div");
@@ -613,17 +540,11 @@ export function createSceneGraphUI() {
   );
   container.appendChild(shortcutsSection.section);
 
-  // function updateSelectionDependentUI() {
-  //   shortcutsSection.section.style.opacity = state.selectedObject ? "1" : "0.6";
-  // }
-
   shortcutsSection.section.style.opacity = state.selectedObject ? "1" : "0.6";
 
   state.onSelectionChanged = () => {
-    // updateSelectionDependentUI();
     createSceneGraphUI();
   };
-  // updateSelectionDependentUI();
 
   shortcutsSection.content.appendChild(createKeyRow("A / D", "Move X"));
   shortcutsSection.content.appendChild(createKeyRow("W / S ", "Move Y"));

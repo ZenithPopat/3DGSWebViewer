@@ -10,25 +10,25 @@ export function applyRenderPreset(presetName, engine) {
 
   state.renderPreset = presetName;
 
-  // 🔹 Resolution scaling (fast, no rebuild)
+  // Resolution scaling
   engine.setHardwareScalingLevel(preset.hardwareScaling);
 
-  // 🔹 Visual helpers
+  // Visual helpers
   setVisualHelpersEnabled(preset.showBoundingBoxes);
 
-  // 🔹 Grid (explicit)
+  // Grid visibility
   if (state.editorGrid) {
     state.editorGrid.setEnabled(preset.showGrid);
   }
 
-  // 🔹 Selection helper visibility (still interactive)
+  // Selection helper visibility
   setSelectionHelperVisibility(preset.showSelectionHelper);
 
-  // --- Render filters (IMPORTANT PART) ---
+  // --- Render filters ---
   state.renderSettings.alphaThreshold = preset.alphaThreshold;
   state.renderSettings.maxViewDistance = preset.maxViewDistance;
 
-  // 🔑 Sync sliders
+  // Sync sliders
   state.renderSettings.pendingAlphaThreshold = preset.alphaThreshold;
   state.renderSettings.pendingMaxViewDistance = preset.maxViewDistance;
 }

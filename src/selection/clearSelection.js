@@ -10,8 +10,4 @@ export function clearSelection() {
     state.selection.previewHighlight = false;
     rebuildMergedMeshFromData(); // restore original colors
   }
-
-  // rebuildMergedMeshWithSelection();
-
-  // console.log("Selection cleared");
 }

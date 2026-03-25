@@ -1,4 +1,3 @@
-// splat/bakeTransforms.js
 import * as BABYLON from "@babylonjs/core";
 import { state } from "../state/state.js";
 import { buildMergedBytes } from "./splatMerge.js";
@@ -20,7 +19,6 @@ export function bakeAllTransforms() {
 
     const isIdentity =
       T.position.lengthSquared() === 0 &&
-      // T.scale.equalsFloats(1, 1, 1) &&
       T.scale.x === 1 &&
       T.scale.y === 1 &&
       T.scale.z === 1 &&
@@ -35,9 +33,6 @@ export function bakeAllTransforms() {
     }
 
     if (!T.rotation.equals(BABYLON.Quaternion.Identity())) {
-      // const axis = T.rotation.getAxis();
-      // const angle = BABYLON.Tools.ToDegrees(T.rotation.getAngle());
-      // bakeRotateParsed(meta, axis, angle);
       bakeRotateParsedQuat(meta, T.rotation);
     }
 
@@ -49,13 +44,13 @@ export function bakeAllTransforms() {
     recomputeBoundingBoxForParsed(meta);
   }
 
-  // Recompute scene bounds AFTER baking (CRITICAL)
+  // Recompute scene bounds after baking transforms
   state.sceneStats.bounds = computeSceneBounds(state.metadataList);
 
-  // ---- Rebuild merged data ----
+  // Rebuild merged data
   state.mergedBytes = buildMergedBytes(state.metadataList);
 
-  // ---- HARD RESET merged mesh ----
+  // HARD RESET merged mesh
   if (state.mergedMesh) {
     state.mergedMesh.dispose();
   }

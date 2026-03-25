@@ -14,6 +14,6 @@ export function setSelectionHelperVisibility(visible) {
   const mesh = state.selectionTool?.mesh;
   if (!mesh) return;
 
-  // IMPORTANT: visibility, not setEnabled
+  // visibility, not setEnabled
   mesh.visibility = visible ? 1 : 0;
 }
