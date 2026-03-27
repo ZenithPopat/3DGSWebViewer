@@ -37,6 +37,14 @@ export const state = {
     avgFps: 0,
     minFps: Infinity,
     maxFps: 0,
+
+    lastRenderTime: 0,
+    avgRenderTime: 0,
+    renderSamples: [],
+
+    loadTimes: [],
+    mergeTimes: [],
+    bakeTimes: [],
   },
 
   editorState: {

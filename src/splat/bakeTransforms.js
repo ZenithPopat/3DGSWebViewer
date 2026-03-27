@@ -11,6 +11,7 @@ import {
 import { computeSceneBounds } from "../utils/computeSceneBounds.js";
 
 export function bakeAllTransforms() {
+  const bakeStart = performance.now();
   for (const meta of state.metadataList) {
     meta.hasUnbakedTransform = false;
     meta.undoStack.length = 0;
@@ -58,7 +59,7 @@ export function bakeAllTransforms() {
   state.mergedMesh = new BABYLON.GaussianSplattingMesh(
     "merged",
     undefined,
-    state.scene,
+    state.scene
   );
 
   state.mergedMesh.updateData(state.mergedBytes.buffer);
@@ -71,4 +72,10 @@ export function bakeAllTransforms() {
   state.mergedMesh.computeWorldMatrix(true);
   state.mergedMesh.refreshBoundingInfo(true);
   state.mergedMesh.freezeWorldMatrix();
+  const bakeEnd = performance.now();
+
+  state.performance.bakeTimes = state.performance.bakeTimes || [];
+  state.performance.bakeTimes.push(bakeEnd - bakeStart);
+
+  console.log("Bake Time:", bakeEnd - bakeStart);
 }

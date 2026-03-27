@@ -157,7 +157,7 @@ export function createCollapsibleSection(
   title,
   icon = "",
   sectionKey,
-  initiallyOpen = true,
+  initiallyOpen = true
 ) {
   let isOpen = state.ui?.sections?.[sectionKey] ?? initiallyOpen;
 
@@ -219,7 +219,7 @@ export function createCollapsibleSection(
 
 export function createObjectRow(
   meta,
-  { onSelect, onFocus, onDelete, onToggleVisibility, isSelected },
+  { onSelect, onFocus, onDelete, onToggleVisibility, isSelected }
 ) {
   const row = document.createElement("div");
   Object.assign(row.style, {

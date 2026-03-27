@@ -7,7 +7,7 @@ export function removeObject(meta) {
   const scene = state.scene;
 
   const ok = confirm(
-    `Delete object "${meta.fileName}"?\nThis action cannot be undone.`,
+    `Delete object "${meta.fileName}"?\nThis action cannot be undone.`
   );
 
   if (!ok) return;
@@ -36,7 +36,7 @@ export function removeObject(meta) {
   state.mergedMesh = new BABYLON.GaussianSplattingMesh(
     "merged",
     undefined,
-    scene,
+    scene
   );
 
   try {
@@ -47,7 +47,7 @@ export function removeObject(meta) {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      scene,
+      scene
     );
     state.mergedMesh.updateData(state.mergedBytes.buffer);
   }

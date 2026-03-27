@@ -25,7 +25,7 @@ export function rotateObject(meta, axis, angleDeg) {
   createSceneGraphUI();
   const q = BABYLON.Quaternion.RotationAxis(
     axis,
-    BABYLON.Tools.ToRadians(angleDeg),
+    BABYLON.Tools.ToRadians(angleDeg)
   );
   meta.localTransform.rotation = q
     .multiply(meta.localTransform.rotation)

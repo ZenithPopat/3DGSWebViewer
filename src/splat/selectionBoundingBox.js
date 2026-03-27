@@ -20,7 +20,7 @@ export function showSelectionBoundingBox(meta) {
       height: size.y,
       depth: size.z,
     },
-    scene,
+    scene
   );
 
   box.position.copyFrom(center);

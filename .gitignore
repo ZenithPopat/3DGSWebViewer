@@ -29,3 +29,7 @@ dist-ssr
 
 # zip files
 *.zip
+
+# Prettier and ESLint cache
+.prettier*
+.eslint*

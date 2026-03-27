@@ -7,7 +7,7 @@ function createSelectionMesh(scene, tool) {
     return BABYLON.MeshBuilder.CreateSphere(
       "selectionSphere",
       { diameter: tool.radius * 2, segments: 24 },
-      scene,
+      scene
     );
   }
 
@@ -19,7 +19,7 @@ function createSelectionMesh(scene, tool) {
       height: tool.boxSize.y * 2,
       depth: tool.boxSize.z * 2,
     },
-    scene,
+    scene
   );
 }
 
@@ -34,7 +34,7 @@ function applySelectionVolumeScale() {
     tool.mesh.scaling.set(
       tool.boxSize.x * 2,
       tool.boxSize.y * 2,
-      tool.boxSize.z * 2,
+      tool.boxSize.z * 2
     );
   }
 }
@@ -50,12 +50,12 @@ export function enableSelectionVolume() {
       ? BABYLON.MeshBuilder.CreateSphere(
           "selectionSphere",
           { diameter: 1 },
-          scene,
+          scene
         )
       : BABYLON.MeshBuilder.CreateBox(
           "selectionBox",
           { width: 1, height: 1, depth: 1 },
-          scene,
+          scene
         );
 
   // Material

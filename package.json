@@ -9,12 +9,18 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@babylonjs/core": "^8.24.0",
-    "@babylonjs/loaders": "^8.2.0",
+    "@babylonjs/core": "8.24.1",
+    "@babylonjs/loaders": "8.24.1",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "@babylonjs/gui": "^8.26.1",
-    "@babylonjs/inspector": "^8.24.0"
+    "@babylonjs/addons": "^8.24.1",
+    "@babylonjs/gui": "8.24.1",
+    "@babylonjs/inspector": "8.24.1",
+    "@babylonjs/materials": "^8.24.1",
+    "@babylonjs/serializers": "^8.24.1"
   }
 }

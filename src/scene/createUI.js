@@ -48,7 +48,7 @@ export function createSceneGraphUI() {
 
   const { container, header, resizeHandle } = createFloatingPanel(
     "sceneGraph",
-    "Editor Panel",
+    "Editor Panel"
   );
 
   // --- Import / Export ---
@@ -58,7 +58,7 @@ export function createSceneGraphUI() {
     "Import / Export Files",
     "📁",
     "importExport",
-    true,
+    true
   );
   container.appendChild(importExport.section);
 
@@ -77,7 +77,7 @@ export function createSceneGraphUI() {
     createButton({
       label: "+ Add .splat files",
       onClick: () => fileInput.click(),
-    }),
+    })
   );
 
   const selected = state.selectedObject;
@@ -89,7 +89,7 @@ export function createSceneGraphUI() {
     selected && selected.redoStack && selected.redoStack.length > 0;
 
   const hasUnbakedAnything = state.metadataList.some(
-    (m) => m.hasUnbakedTransform,
+    (m) => m.hasUnbakedTransform
   );
 
   importExport.content.appendChild(
@@ -111,7 +111,7 @@ export function createSceneGraphUI() {
           createSceneGraphUI();
         },
       }),
-    ]),
+    ])
   );
 
   importExport.content.appendChild(
@@ -123,7 +123,7 @@ export function createSceneGraphUI() {
         bakeAllTransforms();
         createSceneGraphUI();
       },
-    }),
+    })
   );
 
   // Export buttons
@@ -139,7 +139,7 @@ export function createSceneGraphUI() {
           label: "⬇ Export Each (Local Space)",
           onClick: () => exportIndividually("splat"),
         }),
-      ]),
+      ])
     );
   }
 
@@ -159,7 +159,7 @@ export function createSceneGraphUI() {
     onClick: () => {
       window.open(
         "https://huggingface.co/spaces/dylanebert/ply-to-splat",
-        "_blank",
+        "_blank"
       );
     },
   });
@@ -176,7 +176,7 @@ export function createSceneGraphUI() {
     "Objects in Scene",
     "🧩",
     "objects",
-    hasObjects,
+    hasObjects
   );
   container.appendChild(objectsSection.section);
 
@@ -208,7 +208,7 @@ export function createSceneGraphUI() {
       createButton({
         label: "⬜ Deselect Object",
         onClick: deselectObject,
-      }),
+      })
     );
 
     objectsSection.content.appendChild(
@@ -216,7 +216,7 @@ export function createSceneGraphUI() {
         label: "🧹 Delete All Objects",
         variant: "danger",
         onClick: clearEditor,
-      }),
+      })
     );
   }
 
@@ -227,7 +227,7 @@ export function createSceneGraphUI() {
     "Render Filters",
     "🎚️",
     "render",
-    false,
+    false
   );
   container.appendChild(renderSection.section);
 
@@ -262,7 +262,7 @@ export function createSceneGraphUI() {
           createSceneGraphUI();
         },
       }),
-    ]),
+    ])
   );
 
   renderSection.content.appendChild(createSubHeading("Custom Settings"));
@@ -279,7 +279,7 @@ export function createSceneGraphUI() {
         switchCamera(nextMode);
         createSceneGraphUI();
       },
-    }),
+    })
   );
 
   renderSection.content.appendChild(
@@ -290,7 +290,7 @@ export function createSceneGraphUI() {
         state.editorGrid.setEnabled(!state.editorGrid.isEnabled());
         state.renderPreset = null;
       },
-    }),
+    })
   );
 
   renderSection.content.appendChild(
@@ -304,7 +304,7 @@ export function createSceneGraphUI() {
         state.renderSettings.pendingAlphaThreshold = v;
         state.renderPreset = null;
       },
-    }),
+    })
   );
 
   renderSection.content.appendChild(
@@ -320,7 +320,7 @@ export function createSceneGraphUI() {
         state.renderSettings.pendingMaxViewDistance = v;
         state.renderPreset = null;
       },
-    }),
+    })
   );
 
   renderSection.content.appendChild(
@@ -337,7 +337,7 @@ export function createSceneGraphUI() {
         rebuildMergedMeshFromData();
         createSceneGraphUI();
       },
-    }),
+    })
   );
 
   container.appendChild(createSoftDivider());
@@ -347,7 +347,7 @@ export function createSceneGraphUI() {
     "Selection Tool",
     "🎯",
     "selection",
-    false,
+    false
   );
   container.appendChild(selectionSection.section);
 
@@ -515,7 +515,7 @@ export function createSceneGraphUI() {
           disableSelectionVolume();
         },
       }),
-    ]),
+    ])
   );
 
   selectionSection.content.appendChild(
@@ -526,7 +526,7 @@ export function createSceneGraphUI() {
         createSceneGraphUI();
       },
       disabled: state.eraseBackup.length === 0,
-    }),
+    })
   );
 
   container.appendChild(createSoftDivider());
@@ -536,7 +536,7 @@ export function createSceneGraphUI() {
     "Keyboard Shortcuts",
     "⌨️",
     "shortcuts",
-    false,
+    false
   );
   container.appendChild(shortcutsSection.section);
 

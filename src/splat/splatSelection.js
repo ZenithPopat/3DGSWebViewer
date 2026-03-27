@@ -18,7 +18,7 @@ export function selectObject(meta, scene) {
   state.selectionBox = BABYLON.MeshBuilder.CreateBox(
     "selBox",
     { size: 1 },
-    scene,
+    scene
   );
 
   state.selectionBox.position.copyFrom(center);

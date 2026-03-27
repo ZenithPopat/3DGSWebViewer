@@ -17,7 +17,7 @@ export async function createScene() {
   const ground = BABYLON.MeshBuilder.CreateGround(
     "editorGrid",
     { width: 2000, height: 2000 },
-    scene,
+    scene
   );
 
   const gridMat = new GridMaterial("gridMat", scene);
@@ -41,7 +41,7 @@ export async function createScene() {
     Math.PI / 3,
     10,
     BABYLON.Vector3.Zero(),
-    scene,
+    scene
   );
 
   // Prevent inversion
@@ -53,7 +53,7 @@ export async function createScene() {
   const flyCam = new BABYLON.UniversalCamera(
     "flyCam",
     new BABYLON.Vector3(0, 0, -10),
-    scene,
+    scene
   );
 
   flyCam.speed = 0.3;

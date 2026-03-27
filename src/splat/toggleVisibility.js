@@ -20,7 +20,7 @@ export function toggleVisibility(meta) {
   state.mergedMesh = new BABYLON.GaussianSplattingMesh(
     "merged",
     undefined,
-    scene,
+    scene
   );
 
   try {
@@ -31,7 +31,7 @@ export function toggleVisibility(meta) {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      scene,
+      scene
     );
     state.mergedMesh.updateData(state.mergedBytes.buffer);
   }

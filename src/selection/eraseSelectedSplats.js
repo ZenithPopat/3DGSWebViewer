@@ -6,7 +6,7 @@ export function eraseSelectedSplats() {
   if (state.selection.splatIndices.size === 0) return;
 
   const ok = confirm(
-    `Erase ${state.selection.splatIndices.size} splats?\nThis action cannot be undone.`,
+    `Erase ${state.selection.splatIndices.size} splats?\nThis action cannot be undone.`
   );
 
   if (!ok) return;

@@ -11,7 +11,7 @@ export function createSelectionSphere() {
   const sphere = BABYLON.MeshBuilder.CreateSphere(
     "selectionSphere",
     { diameter: radius * 2, segments: 24 },
-    scene,
+    scene
   );
 
   // Transparent material

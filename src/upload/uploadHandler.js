@@ -11,6 +11,7 @@ export async function handleFileUpload(files) {
   const scene = state.scene;
 
   for (const file of files) {
+    const loadStart = performance.now();
     const url = URL.createObjectURL(file);
 
     // TEMP MESH (only used for loading splat data)
@@ -18,7 +19,7 @@ export async function handleFileUpload(files) {
       file.name,
       url,
       scene,
-      true,
+      true
     );
 
     // Wait for the mesh to load in ANY Babylon version
@@ -78,7 +79,7 @@ export async function handleFileUpload(files) {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      scene,
+      scene
     );
 
     try {
@@ -89,7 +90,7 @@ export async function handleFileUpload(files) {
       state.mergedMesh = new BABYLON.GaussianSplattingMesh(
         "merged",
         undefined,
-        scene,
+        scene
       );
       state.mergedMesh.updateData(state.mergedBytes.buffer);
     }
@@ -100,6 +101,14 @@ export async function handleFileUpload(files) {
 
     state.mergedMesh.computeWorldMatrix(true);
     state.mergedMesh.refreshBoundingInfo();
+
+    const loadEnd = performance.now();
+    const loadTime = loadEnd - loadStart;
+
+    state.performance.loadTimes = state.performance.loadTimes || [];
+    state.performance.loadTimes.push(loadTime);
+
+    // console.log("Load Time:", loadTime);
 
     // Clean up temp mesh
     tempMesh.dispose();

@@ -39,7 +39,7 @@ export function enableObjectPicking(scene) {
       scene.pointerX,
       scene.pointerY,
       BABYLON.Matrix.Identity(),
-      scene.activeCamera,
+      scene.activeCamera
     );
 
     let picked = null;

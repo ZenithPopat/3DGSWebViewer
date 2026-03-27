@@ -16,7 +16,7 @@ function safeUpdateMesh() {
     state.mergedMesh = new BABYLON.GaussianSplattingMesh(
       "merged",
       undefined,
-      state.scene,
+      state.scene
     );
     state.mergedMesh.updateData(state.mergedBytes.buffer);
   }

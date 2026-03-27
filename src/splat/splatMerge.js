@@ -3,6 +3,7 @@ import { packSplatRecord } from "./splatFormat.js";
 import { state } from "../state/state.js";
 
 export function buildMergedBytes(metadataList) {
+  const mergeStart = performance.now();
   const { alphaThreshold, maxViewDistance } = state.renderSettings;
   const bounds = state.sceneStats.bounds;
 
@@ -127,5 +128,9 @@ export function buildMergedBytes(metadataList) {
   // Final stats
   state.stats.visibleSplats = visibleSplats;
 
+  const mergeEnd = performance.now();
+
+  state.performance.mergeTimes = state.performance.mergeTimes || [];
+  state.performance.mergeTimes.push(mergeEnd - mergeStart);
   return merged;
 }

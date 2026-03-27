@@ -59,11 +59,35 @@ function formatCount(n) {
   }, 400);
 
   state.scene.onBeforeRenderObservable.add(() => {
+    let ram = "N/A";
+    if (performance.memory) {
+      ram = (performance.memory.usedJSHeapSize / 1048576).toFixed(1) + " MB";
+    }
+
+    // GPU estimate
+    const bytesPerSplat = 32;
+    const gpuMB = (state.stats.totalSplats * bytesPerSplat) / (1024 * 1024);
+    const lastBake = state.performance.bakeTimes?.slice(-1)[0] ?? 0;
+    const lastLoad = state.performance.loadTimes?.slice(-1)[0] ?? 0;
+
+    const lastMerge = state.performance.mergeTimes?.slice(-1)[0] ?? 0;
+
     fpsDiv.innerHTML = `
     FPS: ${engine.getFps().toFixed(1)}<br/>
     AVG: ${state.performance.avgFps.toFixed(1)}<br/>
     MIN: ${state.performance.minFps.toFixed(1)}<br/>
     MAX: ${state.performance.maxFps.toFixed(1)}<br/>
+
+    Frame: ${state.performance.lastRenderTime.toFixed(2)} ms<br/>
+    Avg Frame: ${state.performance.avgRenderTime.toFixed(2)} ms<br/>
+
+    Load: ${lastLoad.toFixed(2)} ms<br/>
+    Merge: ${lastMerge.toFixed(2)} ms<br/>
+    Bake: ${lastBake ? lastBake.toFixed(2) + " ms" : "—"}<br/>
+
+    RAM: ${ram}<br/>
+    GPU (est): ${gpuMB.toFixed(2)} MB<br/>
+
     Splats: ${formatCount(state.stats.visibleSplats)} / ${formatCount(state.stats.totalSplats)}<br/>
     Mode: ${getInteractionMode()}
   `;
@@ -82,7 +106,28 @@ function formatCount(n) {
       lastScalingLevel = targetScaling;
     }
 
+    const start = performance.now();
+
     state.scene.render();
+
+    const end = performance.now();
+    const renderTime = end - start;
+
+    const p = state.performance;
+
+    p.lastRenderTime = renderTime;
+
+    p.renderSamples.push(renderTime);
+    if (p.renderSamples.length > 120) p.renderSamples.shift();
+
+    let sum = 0;
+    for (let i = 0; i < p.renderSamples.length; i++) {
+      sum += p.renderSamples[i];
+    }
+
+    p.avgRenderTime = sum / p.renderSamples.length;
+
+    // state.scene.render();
   });
 
   // engine.runRenderLoop(() => {
@@ -93,3 +138,29 @@ function formatCount(n) {
 
   window.addEventListener("resize", () => engine.resize());
 })();
+
+window.captureMetrics = () => {
+  const p = state.performance;
+
+  const snapshot = {
+    splatsVisible: state.stats.visibleSplats,
+    splatsTotal: state.stats.totalSplats,
+
+    fps: p.avgFps,
+    minFps: p.minFps,
+    maxFps: p.maxFps,
+
+    frameTime: p.avgRenderTime,
+
+    loadTime: p.loadTimes?.slice(-1)[0] || 0,
+    mergeTime: p.mergeTimes?.slice(-1)[0] || 0,
+    bakeTime: p.bakeTimes?.slice(-1)[0] || 0,
+
+    ram: performance.memory
+      ? performance.memory.usedJSHeapSize / 1048576
+      : null,
+  };
+
+  console.table(snapshot);
+  return snapshot;
+};
