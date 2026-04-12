@@ -27,7 +27,7 @@ export function eraseSelectedSplats() {
     });
   }
 
-  // 🔹 Store backup (only if something was erased)
+  // Store backup (only if something was erased)
   if (backupBatch.length > 0) {
     state.eraseBackup.push(backupBatch);
   }

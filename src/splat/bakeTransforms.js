@@ -45,6 +45,8 @@ export function bakeAllTransforms() {
     recomputeBoundingBoxForParsed(meta);
   }
 
+  state.eraseBackup.length = 0;
+
   // Recompute scene bounds after baking transforms
   state.sceneStats.bounds = computeSceneBounds(state.metadataList);
 
