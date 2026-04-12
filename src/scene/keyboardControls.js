@@ -25,10 +25,10 @@ export function setupKeyboardControls() {
         moveObject(meta, 0, -step, 0);
         break;
       case "a":
-        moveObject(meta, -step, 0, 0);
+        moveObject(meta, step, 0, 0);
         break;
       case "d":
-        moveObject(meta, step, 0, 0);
+        moveObject(meta, -step, 0, 0);
         break;
       case "q":
         moveObject(meta, 0, 0, -step);
@@ -45,11 +45,9 @@ export function setupKeyboardControls() {
         break;
 
       case "i":
-        // rotateObject(meta, "x", -5);
         rotateObject(meta, BABYLON.Axis.X, -5);
         break;
       case "k":
-        // rotateObject(meta, "x", 5);
         rotateObject(meta, BABYLON.Axis.X, 5);
         break;
       case "u":
@@ -72,6 +70,5 @@ export function setupKeyboardControls() {
   });
   window.addEventListener("keyup", () => {
     state.editorState.isInteracting = false;
-    // state.editorState.interactionMode = "IDLE";
   });
 }

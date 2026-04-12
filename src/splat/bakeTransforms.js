@@ -76,6 +76,4 @@ export function bakeAllTransforms() {
 
   state.performance.bakeTimes = state.performance.bakeTimes || [];
   state.performance.bakeTimes.push(bakeEnd - bakeStart);
-
-  console.log("Bake Time:", bakeEnd - bakeStart);
 }

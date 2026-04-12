@@ -14,7 +14,6 @@ export async function handleFileUpload(files) {
     const loadStart = performance.now();
     const url = URL.createObjectURL(file);
 
-    // TEMP MESH (only used for loading splat data)
     const tempMesh = new BABYLON.GaussianSplattingMesh(
       file.name,
       url,
@@ -22,7 +21,6 @@ export async function handleFileUpload(files) {
       true
     );
 
-    // Wait for the mesh to load in ANY Babylon version
     await waitForGaussianMeshReady(tempMesh);
 
     if (!tempMesh.splatsData) {
@@ -108,9 +106,6 @@ export async function handleFileUpload(files) {
     state.performance.loadTimes = state.performance.loadTimes || [];
     state.performance.loadTimes.push(loadTime);
 
-    // console.log("Load Time:", loadTime);
-
-    // Clean up temp mesh
     tempMesh.dispose();
   }
 
