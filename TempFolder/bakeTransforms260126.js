@@ -19,7 +19,6 @@ export function bakeAllTransforms() {
 
     const isIdentity =
       T.position.lengthSquared() === 0 &&
-      // T.scale.equalsFloats(1, 1, 1) &&
       T.scale.x === 1 &&
       T.scale.y === 1 &&
       T.scale.z === 1 &&
@@ -34,9 +33,6 @@ export function bakeAllTransforms() {
     }
 
     if (!T.rotation.equals(BABYLON.Quaternion.Identity())) {
-      // const axis = T.rotation.getAxis();
-      // const angle = BABYLON.Tools.ToDegrees(T.rotation.getAngle());
-      // bakeRotateParsed(meta, axis, angle);
       bakeRotateParsedQuat(meta, T.rotation);
     }
 

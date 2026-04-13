@@ -126,15 +126,7 @@ function formatCount(n) {
     }
 
     p.avgRenderTime = sum / p.renderSamples.length;
-
-    // state.scene.render();
   });
-
-  // engine.runRenderLoop(() => {
-  //   if (state.scene) {
-  //     state.scene.render();
-  //   }
-  // });
 
   window.addEventListener("resize", () => engine.resize());
 })();

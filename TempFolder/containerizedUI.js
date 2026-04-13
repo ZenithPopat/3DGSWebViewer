@@ -30,14 +30,9 @@ export function createSceneGraphUI() {
   const old = document.getElementById("sceneGraph");
   if (old) old.remove();
 
-  // const { container, header, resizeHandle } = createFloatingPanel(
-  //   "sceneGraph",
-  //   "Editor Panel"
-  // );
-
   const projectPanel = createFloatingPanel("project", "📁 Project");
 
-  // --- Import / Export ---
+  // Import / Export
   const importExport = createCollapsibleSection(
     "Import / Export Files",
     "📁",
@@ -82,7 +77,7 @@ export function createSceneGraphUI() {
 
   projectPanel.container.appendChild(createSoftDivider());
 
-  // --- Keyboard Shortcuts ---
+  // Keyboard Shortcuts
   const shortcutsSection = createCollapsibleSection(
     "Keyboard Shortcuts",
     "⌨️",
@@ -110,7 +105,7 @@ export function createSceneGraphUI() {
 
   // container.appendChild(createSoftDivider());
 
-  // --- Objects in Scene ---
+  // Objects in Scene
   const hasObjects = state.metadataList.length > 0;
 
   const sceneGraphPanel = createFloatingPanel("sceneGraph", "🧩 Scene Graph");
@@ -156,7 +151,7 @@ export function createSceneGraphUI() {
 
   // container.appendChild(createSoftDivider());
 
-  // --- Selection Tool ---
+  // Selection Tool
 
   const toolsPanel = createFloatingPanel("tools", "🎯 Selection & Transform");
 
@@ -245,7 +240,7 @@ export function createSceneGraphUI() {
   projectPanel.container.style.left = "10px";
   projectPanel.container.style.top = "300px";
 
-  // --- Drag & Resize Logic ---
+  // Drag & Resize Logic
 
   enableDragAndResize(
     sceneGraphPanel.container,
@@ -265,7 +260,6 @@ export function createSceneGraphUI() {
     projectPanel.resizeHandle
   );
 
-  // document.body.appendChild(container);
   document.body.appendChild(projectPanel.container);
   document.body.appendChild(sceneGraphPanel.container);
   document.body.appendChild(toolsPanel.container);

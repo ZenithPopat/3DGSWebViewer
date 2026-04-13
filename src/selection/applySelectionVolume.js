@@ -18,48 +18,6 @@ export function applySelectionVolume() {
 
   state.selection.splatIndices.clear();
 
-  // let globalIndex = 0;
-
-  // for (const meta of state.metadataList) {
-  //   // 🔒 Restrict selection to selected object if enabled
-  //   if (
-  //     state.selection.restrictToSelectedObject &&
-  //     state.selectedObject &&
-  //     meta.id !== state.selectedObject.id
-  //   ) {
-  //     globalIndex += meta.parsed.length;
-  //     continue;
-  //   }
-
-  //   for (let i = 0; i < meta.parsed.length; i++) {
-  //     const s = meta.parsed[i];
-
-  //     // splat world position
-  //     const worldPos = new BABYLON.Vector3(s.px, s.py, s.pz);
-
-  //     const localPos = BABYLON.Vector3.TransformCoordinates(worldPos, invWorld);
-
-  //     let inside = false;
-
-  //     if (tool.shape === "sphere") {
-  //       inside = localPos.lengthSquared() <= 0.25;
-  //     } else if (tool.shape === "box") {
-  //       inside =
-  //         Math.abs(localPos.x) <= 0.5 &&
-  //         Math.abs(localPos.y) <= 0.5 &&
-  //         Math.abs(localPos.z) <= 0.5;
-  //     }
-
-  //     if (inside) {
-  //       state.selection.splatIndices.add(globalIndex);
-  //     }
-
-  //     globalIndex++;
-  //   }
-  // }
-
-  // const invWorld = mesh.getWorldMatrix().clone().invert();
-
   for (
     let mergedIndex = 0;
     mergedIndex < state.mergeMap.length;

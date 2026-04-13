@@ -45,9 +45,9 @@ export async function createScene() {
   );
 
   // Prevent inversion
-  orbitCam.lowerRadiusLimit = 1.0;
-  orbitCam.lowerBetaLimit = 0.01;
-  orbitCam.upperBetaLimit = Math.PI * 0.99;
+  // orbitCam.lowerRadiusLimit = 1.0;
+  // orbitCam.lowerBetaLimit = 0.01;
+  // orbitCam.upperBetaLimit = Math.PI * 0.99;
   orbitCam.attachControl(canvas, true);
 
   const flyCam = new BABYLON.UniversalCamera(

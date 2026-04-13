@@ -10,7 +10,6 @@ export function computeSceneBounds(metadataList) {
     const b = meta.boundingBox;
     if (!b || !b.min || !b.max) continue;
 
-    // Ensure these are actually Vector3
     if (!(b.min instanceof Vector3) || !(b.max instanceof Vector3)) continue;
 
     min.x = Math.min(min.x, b.min.x);

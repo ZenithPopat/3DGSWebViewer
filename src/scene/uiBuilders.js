@@ -23,7 +23,7 @@ export function createFloatingPanel(id, title) {
     boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
   });
 
-  // Header (drag handle)
+  // Header
   const header = document.createElement("div");
   header.textContent = title;
   Object.assign(header.style, {
@@ -36,41 +36,7 @@ export function createFloatingPanel(id, title) {
     userSelect: "none",
   });
 
-  // Object.assign(container.style, {
-  //   maskImage: `linear-gradient(
-  //   to bottom,
-  //   transparent,
-  //   black 10px,
-  //   black calc(100% - 10px),
-  //   transparent
-  // )`,
-  //   WebkitMaskImage: `linear-gradient(
-  //   to bottom,
-  //   transparent,
-  //   black 10px,
-  //   black calc(100% - 10px),
-  //   transparent
-  // )`,
-  // });
-
-  // Resize handle (bottom-right)
-  // const resizeHandle = document.createElement("div");
-  // Object.assign(resizeHandle.style, {
-  //   width: "14px",
-  //   height: "14px",
-  //   position: "absolute",
-  //   right: "2px",
-  //   bottom: "2px",
-  //   cursor: "nwse-resize",
-  //   background: "rgba(255,255,255,0.15)",
-  //   borderRadius: "3px",
-  // });
-
   container.appendChild(header);
-  // container.appendChild(resizeHandle);
-
-  // ✅ RETURN resizeHandle
-  // return { container, header, resizeHandle };
   return { container, header };
 }
 
@@ -242,7 +208,6 @@ export function createObjectRow(
   };
 
   const name = document.createElement("div");
-  // name.textContent = meta.fileName.replace(/\.(splat)$/, "");
   name.textContent =
     meta.fileName.replace(/\.(splat)$/, "") +
     (meta.hasUnbakedTransform ? " *" : "");
@@ -334,16 +299,6 @@ export function enableDragAndResize(container, header) {
     isResizing = false;
     document.body.style.userSelect = "auto";
   });
-
-  // resizeHandle.addEventListener("mousedown", (e) => {
-  //   e.stopPropagation();
-  //   isResizing = true;
-  //   startWidth = container.offsetWidth;
-  //   startHeight = container.offsetHeight;
-  //   startX = e.clientX;
-  //   startY = e.clientY;
-  //   document.body.style.userSelect = "none";
-  // });
 }
 
 export function createKeyRow(key, description) {

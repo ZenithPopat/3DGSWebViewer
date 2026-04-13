@@ -48,6 +48,5 @@ export function toggleVisibility(meta) {
     state.selectedObject = null;
   }
 
-  // Refresh UI
   createSceneGraphUI();
 }

@@ -17,7 +17,7 @@ export function buildMergedBytes(metadataList) {
     if (!meta.parsed) continue;
 
     for (const s of meta.parsed) {
-      // ---- Alpha filtering ----
+      // Alpha filtering
       const alpha = s.a ?? 1.0;
       if (alpha < alphaThreshold) continue;
 

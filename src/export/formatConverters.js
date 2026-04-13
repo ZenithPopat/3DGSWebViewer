@@ -1,37 +1,5 @@
 const RECORD_BYTES = 32;
 
-// export function convertParsedToSplat(parsed) {
-//   const buf = new Uint8Array(parsed.length * RECORD_BYTES);
-
-//   parsed.forEach((s, i) => {
-//     const base = i * RECORD_BYTES;
-//     const view = new DataView(buf.buffer);
-
-//     view.setFloat32(base + 0, s.px, true);
-//     view.setFloat32(base + 4, -s.py, true);
-//     view.setFloat32(base + 8, s.pz, true);
-
-//     view.setFloat32(base + 12, s.sx, true);
-//     view.setFloat32(base + 16, s.sy, true);
-//     view.setFloat32(base + 20, s.sz, true);
-
-//     buf[base + 24] = s.r;
-//     buf[base + 25] = s.g;
-//     buf[base + 26] = s.b;
-//     buf[base + 27] = s.a;
-
-//     buf[base + 28] = Math.round(s.q0 * 128 + 128);
-//     buf[base + 29] = Math.round(-s.q1 * 128 + 128);
-//     buf[base + 30] = Math.round(s.q2 * 128 + 128);
-//     buf[base + 31] = Math.round(-s.q3 * 128 + 128);
-//   });
-
-//   return buf;
-// }
-
-/* ---------------------------------------------
-   parsed[] → .splat (binary)
---------------------------------------------- */
 export function convertParsedToSplat(parsed) {
   const buf = new Uint8Array(parsed.length * RECORD_BYTES);
   const view = new DataView(buf.buffer);

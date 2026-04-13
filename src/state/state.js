@@ -53,7 +53,6 @@ export const state = {
     lastInteractionTime: 0,
   },
   renderSettings: {
-    // alphaThreshold: 0.01, // default alpha cutoff
     alphaThreshold: 20,
     maxViewDistance: Infinity,
     pendingAlphaThreshold: 20,
@@ -76,7 +75,7 @@ export const state = {
     idleScaling: 1.0,
     interactionScaling: 1.5,
   },
-  renderPreset: "normal", // "pro" / "normal" / "performance"
+  renderPreset: "normal", // "quality" / "balanced" / "performance"
 
   presets: {
     pro: {

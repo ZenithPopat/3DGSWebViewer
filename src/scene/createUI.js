@@ -51,7 +51,7 @@ export function createSceneGraphUI() {
     "Editor Panel"
   );
 
-  // --- Import / Export ---
+  // Import / Export
   const hasObjects = state.metadataList.length > 0;
 
   const importExport = createCollapsibleSection(
@@ -170,7 +170,7 @@ export function createSceneGraphUI() {
 
   container.appendChild(createSoftDivider());
 
-  // --- Objects in Scene ---
+  // Objects in Scene
 
   const objectsSection = createCollapsibleSection(
     "Objects in Scene",
@@ -222,7 +222,7 @@ export function createSceneGraphUI() {
 
   container.appendChild(createSoftDivider());
 
-  // --- Render Section ---
+  // Render Section
   const renderSection = createCollapsibleSection(
     "Render Filters",
     "🎚️",
@@ -342,7 +342,7 @@ export function createSceneGraphUI() {
 
   container.appendChild(createSoftDivider());
 
-  // --- Selection Tool ---
+  // Selection Tool
   const selectionSection = createCollapsibleSection(
     "Selection Tool",
     "🎯",
@@ -531,7 +531,7 @@ export function createSceneGraphUI() {
 
   container.appendChild(createSoftDivider());
 
-  // --- Keyboard Shortcuts ---
+  // Keyboard Shortcuts
   const shortcutsSection = createCollapsibleSection(
     "Keyboard Shortcuts",
     "⌨️",
@@ -555,7 +555,7 @@ export function createSceneGraphUI() {
   shortcutsSection.content.appendChild(createKeyRow("Y / H", "Rotate Z"));
   shortcutsSection.content.appendChild(createKeyRow("R", "Delete Object"));
 
-  // --- Drag & Resize Logic ---
+  // Drag & Resize Logic
 
   enableDragAndResize(container, header, resizeHandle);
 

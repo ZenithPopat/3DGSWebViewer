@@ -24,7 +24,7 @@ export function applyRenderPreset(presetName, engine) {
   // Selection helper visibility
   setSelectionHelperVisibility(preset.showSelectionHelper);
 
-  // --- Render filters ---
+  // Render filters
   state.renderSettings.alphaThreshold = preset.alphaThreshold;
   state.renderSettings.maxViewDistance = preset.maxViewDistance;
 
